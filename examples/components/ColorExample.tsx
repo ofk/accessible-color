@@ -1,12 +1,28 @@
+import { simulate } from '@bjornlu/colorblind';
 import { css } from '@emotion/css';
 import chroma from 'chroma-js';
 import React from 'react';
 
 import { mixColor, toColorString } from '../utils/colorUtils';
 
+const simulateColor = (color: chroma.Color, style: string): chroma.Color => {
+  if (
+    style === 'protanopia' ||
+    style === 'deuteranopia' ||
+    style === 'tritanopia' ||
+    style === 'achromatopsia'
+  ) {
+    const rgba = color.rgba();
+    const rgb = simulate({ r: rgba[0], g: rgba[1], b: rgba[2] }, style);
+    return chroma(rgb.r, rgb.g, rgb.b, rgba[3]);
+  }
+  return color;
+};
+
 export const ColorExample: React.FC<{
   backgroundColor: chroma.Color;
   color: chroma.Color;
+  simulationStyle: string;
   outputStyle: string;
   hideMargin?: boolean;
   hideExample?: boolean;
@@ -17,6 +33,7 @@ export const ColorExample: React.FC<{
 }> = ({
   backgroundColor,
   color,
+  simulationStyle,
   outputStyle,
   hideMargin,
   hideExample,
@@ -26,13 +43,14 @@ export const ColorExample: React.FC<{
   hideInfomation,
 }) => {
   const opaqueColor = mixColor(backgroundColor, color);
+  const displayColor = simulateColor(color, simulationStyle);
   return (
     <div
       className={css`
         display: inline-block;
         width: 12em;
         padding: ${hideMargin ? 0 : '0.5em'};
-        color: ${color.css()};
+        color: ${displayColor.css()};
       `}
     >
       {hideExample ? null : (
@@ -50,7 +68,7 @@ export const ColorExample: React.FC<{
             className={css`
               padding: 2px 4px;
               color: ${opaqueColor.luminance() < 0.5 ? 'white' : 'black'};
-              background-color: ${color.css()};
+              background-color: ${displayColor.css()};
             `}
           >
             Fill
@@ -62,7 +80,7 @@ export const ColorExample: React.FC<{
           className={css`
             padding: 0.5em;
             color: ${opaqueColor.luminance() < 0.5 ? 'white' : 'black'};
-            background-color: ${color.css()};
+            background-color: ${displayColor.css()};
           `}
         >
           {hideOutput ? '\u00A0' : toColorString(color, outputStyle)}

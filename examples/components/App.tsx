@@ -132,6 +132,7 @@ const initialColorChunks: ColorChunk[] = [
 export const App: React.FC = () => {
   const [backgroundRawColor, setBackgroundRawColor] = useState('white');
   const [backgroundColor, setBackgroundColor] = useState(chroma('white'));
+  const [simulationStyle, setSimulationStyle] = useState('normal');
   const [outputStyle, setOutputStyle] = useState('hex');
   const [visibleExample, setVisibleExample] = useState(true);
   const [visiblePalette, setVisiblePalette] = useState(true);
@@ -209,6 +210,13 @@ export const App: React.FC = () => {
               setNoneMode(nextChecked);
             }}
             label="none"
+          />{' '}
+          / Simulation:
+          <RadioButtons
+            name="simulationStyle"
+            value={simulationStyle}
+            setValue={setSimulationStyle}
+            options={['normal', 'protanopia', 'deuteranopia', 'tritanopia', 'achromatopsia']}
           />
         </div>
         {colorChunks.map((colorChunk, i) => (
@@ -267,6 +275,7 @@ export const App: React.FC = () => {
                       key={k}
                       backgroundColor={backgroundColor}
                       color={color}
+                      simulationStyle={simulationStyle}
                       outputStyle={outputStyle}
                       hideMargin={noneMode}
                       hideExample={noneMode || !visibleExample}
