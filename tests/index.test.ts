@@ -1,6 +1,6 @@
 import chroma from 'chroma-js';
 
-import { color, gray, toColor } from '../src';
+import { color, gray, toColor, translucent } from '../src';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -65,6 +65,13 @@ describe('functions', () => {
   test('toColor', () => {
     expect(toColor('red')).toBeCloseToColor('#ff0000');
     expect(toColor('invalid')).toBeCloseToColor('#000000');
+  });
+
+  test('translucent', () => {
+    expect(translucent('white', 'black', '#999')).toBeCloseToColor('#00000066');
+    expect(translucent('black', 'white', '#999')).toBeCloseToColor('#ffffff99');
+    expect(translucent('white', '#999')).toBeCloseToColor('#00000066');
+    expect(translucent('black', '#999')).toBeCloseToColor('#ffffff99');
   });
 
   test('gray', () => {

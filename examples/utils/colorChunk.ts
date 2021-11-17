@@ -1,6 +1,6 @@
 import type chroma from 'chroma-js';
 
-import { color, gray, toColor } from '../../src';
+import { color, gray, toColor, translucent } from '../../src';
 
 export type ColorChunk =
   | {
@@ -9,6 +9,10 @@ export type ColorChunk =
     }
   | {
       type: 'gray';
+      args: [string];
+    }
+  | {
+      type: 'translucent-gray';
       args: [string];
     }
   | {
@@ -35,6 +39,14 @@ export const colorChunkTemplates = [
     ],
   },
   {
+    type: 'translucent-gray',
+    inputPropsSet: [
+      {
+        placeholder: 'contrast1 contrast2 ...',
+      },
+    ],
+  },
+  {
     type: 'color',
     inputPropsSet: [
       {
@@ -51,6 +63,7 @@ export const getInitialColorChunk = (type: ColorChunk['type']): ColorChunk => {
   switch (type) {
     case 'raw':
     case 'gray':
+    case 'translucent-gray':
       return { type, args: [''] };
     case 'color':
       return { type, args: ['', ''] };
@@ -90,6 +103,12 @@ export const toColorsSetFromColorChunk = (
       );
     case 'gray':
       return [splitWithSpace(colorChunk.args[0]).map((s) => gray(backgroundColor, parseFloat(s)))];
+    case 'translucent-gray':
+      return [
+        splitWithSpace(colorChunk.args[0]).map((s) =>
+          translucent(backgroundColor, gray(backgroundColor, parseFloat(s)))
+        ),
+      ];
     case 'color':
       return splitWithSpace(colorChunk.args[0]).map((sHue) =>
         splitWithSpace(colorChunk.args[1]).map((sContrast) =>
