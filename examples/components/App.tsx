@@ -71,8 +71,8 @@ const cudAccentColors = [
 
 const initialColorChunks: ColorChunk[] = [
   {
-    type: 'raw',
-    args: [['#fff', '#ccc', '#999', '#666', '#333', '#000'].join(' ')],
+    type: 'gray',
+    args: [[1, 1.1, 1.25, 1.5, 2, 3, 8, 12].join(' ')],
   },
   {
     type: 'raw',
@@ -266,7 +266,7 @@ export const App: React.FC = () => {
                 background-color: ${backgroundColor.css()};
               `}
             >
-              {toColorsSetFromColorChunk(colorChunk).map((colorsSet, j) => (
+              {toColorsSetFromColorChunk(backgroundColor, colorChunk).map((colorsSet, j) => (
                 // eslint-disable-next-line react/no-array-index-key
                 <div key={j}>
                   {colorsSet.map((color, k) => (

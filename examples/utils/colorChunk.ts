@@ -1,9 +1,16 @@
-import chroma from 'chroma-js';
+import type chroma from 'chroma-js';
 
-export type ColorChunk = {
-  type: 'raw';
-  args: [string];
-};
+import { gray, toColor } from '../../src';
+
+export type ColorChunk =
+  | {
+      type: 'raw';
+      args: [string];
+    }
+  | {
+      type: 'gray';
+      args: [string];
+    };
 
 export const colorChunkTemplates = [
   {
@@ -15,11 +22,20 @@ export const colorChunkTemplates = [
       },
     ],
   },
+  {
+    type: 'gray',
+    inputPropsSet: [
+      {
+        placeholder: 'contrast1 contrast2 ...',
+      },
+    ],
+  },
 ];
 
 export const getInitialColorChunk = (type: ColorChunk['type']): ColorChunk => {
   switch (type) {
     case 'raw':
+    case 'gray':
       return { type, args: [''] };
     default:
       throw new Error(`Not support type: ${type}`);
@@ -46,21 +62,18 @@ const splitWithSpace = (str: string): string[] => {
   return trimedStr ? trimedStr.split(/\s+/) : [];
 };
 
-const toColor = (value: string): chroma.Color => {
-  try {
-    return chroma(value);
-  } catch (e: unknown) {
-    return chroma(0, 0, 0);
-  }
-};
-
-export const toColorsSetFromColorChunk = (colorChunk: ColorChunk): chroma.Color[][] => {
+export const toColorsSetFromColorChunk = (
+  backgroundColor: chroma.Color,
+  colorChunk: ColorChunk
+): chroma.Color[][] => {
   switch (colorChunk.type) {
     case 'raw':
       return splitWithBreak(colorChunk.args[0]).map((colorsText) =>
         splitWithSpace(colorsText).map(toColor)
       );
+    case 'gray':
+      return [splitWithSpace(colorChunk.args[0]).map((s) => gray(backgroundColor, parseFloat(s)))];
     default:
-      throw new Error(`Not support type: ${colorChunk.type}`);
+      throw new Error(`Not support type: ${(colorChunk as { type: string }).type}`);
   }
 };
