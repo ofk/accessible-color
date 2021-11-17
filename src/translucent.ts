@@ -27,3 +27,27 @@ export const calcTranslucentColor = (
   const backgroundValue = backgroundColor.hsv()[2];
   return foregroundColor.alpha(calcAlphaValue(backgroundValue, baseValue, targetValue));
 };
+
+export const mixColor = (
+  backgroundColor: chroma.Color,
+  foregroundColor: chroma.Color
+): chroma.Color =>
+  chroma.mix(backgroundColor, foregroundColor.alpha(1), foregroundColor.alpha(), 'rgb');
+
+export const isolateColor = (
+  backgroundColor: chroma.Color,
+  targetColor: chroma.Color,
+  alpha: number
+): chroma.Color => {
+  if (alpha < 1) {
+    const backgroundRgb = backgroundColor.rgb();
+    const targetRgb = targetColor.rgb();
+    return chroma(
+      (targetRgb[0] - backgroundRgb[0]) / alpha + backgroundRgb[0],
+      (targetRgb[1] - backgroundRgb[1]) / alpha + backgroundRgb[1],
+      (targetRgb[2] - backgroundRgb[2]) / alpha + backgroundRgb[2],
+      alpha
+    );
+  }
+  return targetColor;
+};

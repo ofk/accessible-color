@@ -74,7 +74,7 @@ const cudAccentColors = [
 const initialColorChunks: ColorChunk[] = [
   {
     type: 'gray',
-    args: [[1, 1.1, 1.25, 1.5, 2, 3, 8, 12].join(' ')],
+    args: [[1, 1.1, 1.25, 1.5, 2, 3, 8, 12].join(' '), ''],
   },
   {
     type: 'translucent-gray',
@@ -85,6 +85,7 @@ const initialColorChunks: ColorChunk[] = [
     args: [
       cudAccentColors.map((c) => chroma(c).hsl()[0].toFixed(2)).join(' '),
       [1.25, 2, 3, 5, 8, 12].join(' '),
+      '',
     ],
   },
   {
@@ -101,6 +102,7 @@ const initialColorChunks: ColorChunk[] = [
         .map((c) => chroma(c).hsl()[0].toFixed(2))
         .join(' '),
       [4, 4.5, 5.5, 6.5].join(' '),
+      '',
     ],
   },
   {

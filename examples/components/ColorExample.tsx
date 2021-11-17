@@ -3,7 +3,8 @@ import { css } from '@emotion/css';
 import chroma from 'chroma-js';
 import React from 'react';
 
-import { mixColor, toColorString } from '../utils/colorUtils';
+import { mixColor } from '../../src';
+import { toColorString } from '../utils/colorUtils';
 
 const simulateColor = (color: chroma.Color, style: string): chroma.Color => {
   if (

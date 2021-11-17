@@ -9,7 +9,7 @@ export type ColorChunk =
     }
   | {
       type: 'gray';
-      args: [string];
+      args: [string, string];
     }
   | {
       type: 'translucent-gray';
@@ -17,7 +17,7 @@ export type ColorChunk =
     }
   | {
       type: 'color';
-      args: [string, string];
+      args: [string, string, string];
     };
 
 export const colorChunkTemplates = [
@@ -35,6 +35,9 @@ export const colorChunkTemplates = [
     inputPropsSet: [
       {
         placeholder: 'contrast1 contrast2 ...',
+      },
+      {
+        placeholder: 'alpha',
       },
     ],
   },
@@ -55,6 +58,9 @@ export const colorChunkTemplates = [
       {
         placeholder: 'contrast1 contrast2 ...',
       },
+      {
+        placeholder: 'alpha',
+      },
     ],
   },
 ];
@@ -62,11 +68,12 @@ export const colorChunkTemplates = [
 export const getInitialColorChunk = (type: ColorChunk['type']): ColorChunk => {
   switch (type) {
     case 'raw':
-    case 'gray':
     case 'translucent-gray':
       return { type, args: [''] };
-    case 'color':
+    case 'gray':
       return { type, args: ['', ''] };
+    case 'color':
+      return { type, args: ['', '', ''] };
     default:
       throw new Error(`Not support type: ${type}`);
   }
@@ -102,7 +109,11 @@ export const toColorsSetFromColorChunk = (
         splitWithSpace(colorsText).map(toColor)
       );
     case 'gray':
-      return [splitWithSpace(colorChunk.args[0]).map((s) => gray(backgroundColor, parseFloat(s)))];
+      return [
+        splitWithSpace(colorChunk.args[0]).map((s) =>
+          gray(backgroundColor, parseFloat(s), parseFloat(colorChunk.args[1]) || 1)
+        ),
+      ];
     case 'translucent-gray':
       return [
         splitWithSpace(colorChunk.args[0]).map((s) =>
@@ -112,7 +123,12 @@ export const toColorsSetFromColorChunk = (
     case 'color':
       return splitWithSpace(colorChunk.args[0]).map((sHue) =>
         splitWithSpace(colorChunk.args[1]).map((sContrast) =>
-          color(backgroundColor, parseFloat(sContrast), parseFloat(sHue))
+          color(
+            backgroundColor,
+            parseFloat(sContrast),
+            parseFloat(sHue),
+            parseFloat(colorChunk.args[2]) || 1
+          )
         )
       );
     default:

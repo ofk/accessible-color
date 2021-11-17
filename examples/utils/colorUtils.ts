@@ -1,5 +1,3 @@
-import chroma from 'chroma-js';
-
 export const toColorString = (color: chroma.Color, outputStyle: string): string => {
   const rnd = (num: number): number => Math.round(num * 100) / 100;
 
@@ -32,9 +30,3 @@ export const toColorString = (color: chroma.Color, outputStyle: string): string 
       return '';
   }
 };
-
-export const mixColor = (
-  backgroundColor: chroma.Color,
-  foregroundColor: chroma.Color
-): chroma.Color =>
-  chroma.mix(backgroundColor, foregroundColor.alpha(1), foregroundColor.alpha(), 'rgb');

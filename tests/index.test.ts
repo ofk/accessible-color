@@ -1,6 +1,6 @@
 import chroma from 'chroma-js';
 
-import { color, gray, toColor, translucent } from '../src';
+import { color, gray, mixColor, toColor, translucent } from '../src';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -81,6 +81,10 @@ describe('functions', () => {
       });
       expect(gray(gray(background, 1.5), -1.5)).toBeCloseToColor(background);
       expect(gray(gray(background, 15), 15)).toBeCloseToColor(background);
+      expect(gray(background, 1.5, 0.5).alpha()).toBeCloseTo(0.5);
+      expect(
+        mixColor(chroma(background), gray(background, 1.5, 0.5))
+      ).toBeGreaterThanOrEqualContrast(1.5, background);
     });
   });
 

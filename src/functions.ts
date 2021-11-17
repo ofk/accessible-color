@@ -3,7 +3,7 @@ import chroma from 'chroma-js';
 import { calcColor } from './color';
 import { calcGrayColor } from './gray';
 import { calcLuminance } from './luminance';
-import { calcBoldColor, calcTranslucentColor } from './translucent';
+import { calcBoldColor, calcTranslucentColor, isolateColor } from './translucent';
 
 // chroma.Color argument type
 export type RawColor = string | number | chroma.Color;
@@ -21,14 +21,20 @@ export const toColor = (value: RawColor): chroma.Color => {
 export const color = (
   backgroundRawColor: RawColor,
   signedContrast: number,
-  hue: number
+  hue: number,
+  alpha = 1
 ): chroma.Color => {
-  const backgroundLuminance = toColor(backgroundRawColor).luminance();
+  const backgroundColor = toColor(backgroundRawColor);
+  const backgroundLuminance = backgroundColor.luminance();
   const targetLuminance = calcLuminance(backgroundLuminance, signedContrast);
   const direction = targetLuminance - backgroundLuminance;
-  return Number.isFinite(hue)
-    ? calcColor(targetLuminance, hue, 1, direction)
-    : calcGrayColor(targetLuminance, direction);
+  return isolateColor(
+    backgroundColor,
+    Number.isFinite(hue)
+      ? calcColor(targetLuminance, hue, 1, direction)
+      : calcGrayColor(targetLuminance, direction),
+    alpha
+  );
 };
 
 // Calculates a translucent color close to the target color with the passed background and foreground colors
@@ -46,5 +52,8 @@ export const translucent = (
 };
 
 // Calculates a gray color with a certain contrast to the passed background color
-export const gray = (backgroundRawColor: RawColor, signedContrast: number): chroma.Color =>
-  color(backgroundRawColor, signedContrast, 0 / 0);
+export const gray = (
+  backgroundRawColor: RawColor,
+  signedContrast: number,
+  alpha = 1
+): chroma.Color => color(backgroundRawColor, signedContrast, 0 / 0, alpha);
