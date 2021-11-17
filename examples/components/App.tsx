@@ -100,6 +100,29 @@ const initialColorChunks: ColorChunk[] = [
     ],
   },
   {
+    type: 'color',
+    args: [
+      cudAccentColors.map((c) => chroma(c).hsl()[0].toFixed(2)).join(' '),
+      [1.25, 2, 3, 5, 8, 12].join(' '),
+    ],
+  },
+  {
+    type: 'color',
+    args: [
+      [
+        /* eslint-disable @typescript-eslint/no-non-null-assertion */
+        specLightBlueColors[0]!,
+        specLightRedColors[0]!,
+        specLightOrangeColors[0]!,
+        specLightGreenColors[0]!,
+        /* eslint-enable @typescript-eslint/no-non-null-assertion */
+      ]
+        .map((c) => chroma(c).hsl()[0].toFixed(2))
+        .join(' '),
+      [4, 4.5, 5.5, 6.5].join(' '),
+    ],
+  },
+  {
     type: 'raw',
     args: [
       [

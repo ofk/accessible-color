@@ -1,6 +1,6 @@
 import chroma from 'chroma-js';
 
-import { gray, toColor } from '../src';
+import { color, gray, toColor } from '../src';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -9,6 +9,7 @@ declare global {
       /* eslint-disable @typescript-eslint/method-signature-style */
       toBeCloseToColor(expected: chroma.Color | string): R;
       toBeGreaterThanOrEqualContrast(contrast: number, background: chroma.Color | string): R;
+      toBeCloseToHue(hue: number, tolerance?: number): R;
       /* eslint-enable @typescript-eslint/method-signature-style */
     }
   }
@@ -45,6 +46,18 @@ beforeEach(() => {
         }to be greater than or equal contrast ${contrast}`;
       return { pass, message };
     },
+    toBeCloseToHue(
+      received: chroma.Color | string,
+      hue: number,
+      tolerance = 2
+    ): jest.CustomMatcherResult {
+      const actualHue = chroma(received).hsl()[0];
+      const diffHue = Math.abs(actualHue - hue) % 360;
+      const pass = Math.min(diffHue, 360 - diffHue) < tolerance;
+      const message = (): string =>
+        `expected hue ${actualHue} of ${received} ${pass ? '' : 'not '}to be hue ${hue}`;
+      return { pass, message };
+    },
   });
 });
 
@@ -61,6 +74,20 @@ describe('functions', () => {
       });
       expect(gray(gray(background, 1.5), -1.5)).toBeCloseToColor(background);
       expect(gray(gray(background, 15), 15)).toBeCloseToColor(background);
+    });
+  });
+
+  test('color', () => {
+    ['white', 'black'].forEach((background) => {
+      [0, 30, 210].forEach((hue) => {
+        [1.5, 4].forEach((contrast) => {
+          expect(color(background, contrast, hue)).toBeGreaterThanOrEqualContrast(
+            contrast,
+            background
+          );
+          expect(color(background, contrast, hue)).toBeCloseToHue(hue);
+        });
+      });
     });
   });
 });

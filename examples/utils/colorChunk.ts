@@ -1,6 +1,6 @@
 import type chroma from 'chroma-js';
 
-import { gray, toColor } from '../../src';
+import { color, gray, toColor } from '../../src';
 
 export type ColorChunk =
   | {
@@ -10,6 +10,10 @@ export type ColorChunk =
   | {
       type: 'gray';
       args: [string];
+    }
+  | {
+      type: 'color';
+      args: [string, string];
     };
 
 export const colorChunkTemplates = [
@@ -30,6 +34,17 @@ export const colorChunkTemplates = [
       },
     ],
   },
+  {
+    type: 'color',
+    inputPropsSet: [
+      {
+        placeholder: 'hue1 hue2 ...',
+      },
+      {
+        placeholder: 'contrast1 contrast2 ...',
+      },
+    ],
+  },
 ];
 
 export const getInitialColorChunk = (type: ColorChunk['type']): ColorChunk => {
@@ -37,6 +52,8 @@ export const getInitialColorChunk = (type: ColorChunk['type']): ColorChunk => {
     case 'raw':
     case 'gray':
       return { type, args: [''] };
+    case 'color':
+      return { type, args: ['', ''] };
     default:
       throw new Error(`Not support type: ${type}`);
   }
@@ -73,6 +90,12 @@ export const toColorsSetFromColorChunk = (
       );
     case 'gray':
       return [splitWithSpace(colorChunk.args[0]).map((s) => gray(backgroundColor, parseFloat(s)))];
+    case 'color':
+      return splitWithSpace(colorChunk.args[0]).map((sHue) =>
+        splitWithSpace(colorChunk.args[1]).map((sContrast) =>
+          color(backgroundColor, parseFloat(sContrast), parseFloat(sHue))
+        )
+      );
     default:
       throw new Error(`Not support type: ${(colorChunk as { type: string }).type}`);
   }
