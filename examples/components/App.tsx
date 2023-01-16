@@ -2,8 +2,10 @@ import { css } from '@emotion/css';
 import chroma from 'chroma-js';
 import React, { useEffect, useState } from 'react';
 
+import { gray } from '../../src';
 import type { ColorChunk } from '../utils/colorChunk';
 import { getInitialColorChunk, toColorsSetFromColorChunk } from '../utils/colorChunk';
+import { toColorString } from '../utils/colorUtils';
 import { Col, ColButton } from './Col';
 import { ColorChunkControlCol } from './ColorChunkControlCol';
 import { ColorExample } from './ColorExample';
@@ -130,6 +132,8 @@ const initialColorChunks: ColorChunk[] = [
 ];
 
 export const App: React.FC = () => {
+  const [backgroundColorType, setBackgroundColorType] = useState('light');
+  const [backgroundContrast, setBackgroundContrast] = useState(1.05);
   const [backgroundRawColor, setBackgroundRawColor] = useState('white');
   const [backgroundColor, setBackgroundColor] = useState(chroma('white'));
   const [simulationStyle, setSimulationStyle] = useState('normal');
@@ -142,11 +146,29 @@ export const App: React.FC = () => {
   const [colorChunks, setColorChunks] = useState<ColorChunk[]>(initialColorChunks);
   useEffect(() => {
     try {
-      setBackgroundColor(chroma(backgroundRawColor));
+      switch (backgroundColorType) {
+        case 'light':
+          {
+            const bgColor = gray('white', backgroundContrast);
+            setBackgroundColor(bgColor);
+            setBackgroundRawColor(toColorString(bgColor, outputStyle));
+          }
+          break;
+        case 'dark':
+          {
+            const bgColor = gray('black', backgroundContrast);
+            setBackgroundColor(bgColor);
+            setBackgroundRawColor(toColorString(bgColor, outputStyle));
+          }
+          break;
+        default:
+          setBackgroundColor(chroma(backgroundRawColor));
+          break;
+      }
     } catch (e) {
       // noop
     }
-  }, [backgroundRawColor]);
+  }, [backgroundColorType, backgroundContrast, backgroundRawColor, outputStyle]);
   return (
     <div
       className={css`
@@ -156,10 +178,47 @@ export const App: React.FC = () => {
       <h1>acolor example</h1>
       <div>
         <div>
-          <label>
-            Basecoat:
-            <Input value={backgroundRawColor} setValue={setBackgroundRawColor} />
-          </label>{' '}
+          Basecoat:
+          <RadioButtons
+            name="backgroundColorType"
+            value={backgroundColorType}
+            setValue={setBackgroundColorType}
+            options={[
+              { value: 'light', label: '+' },
+              {
+                value: 'dark',
+                label: (
+                  <>
+                    -{' '}
+                    <input
+                      type="number"
+                      min={1}
+                      step={0.1}
+                      value={backgroundContrast}
+                      onChange={(e): void => {
+                        setBackgroundContrast(Number(e.target.value));
+                      }}
+                      className={css`
+                        width: 3em;
+                      `}
+                    />
+                  </>
+                ),
+              },
+              {
+                value: 'color',
+                label: (
+                  <Input
+                    value={backgroundRawColor}
+                    setValue={setBackgroundRawColor}
+                    className={css`
+                      width: 5em;
+                    `}
+                  />
+                ),
+              },
+            ]}
+          />{' '}
           / Output:
           <RadioButtons
             name="outputStyle"
