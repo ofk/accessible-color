@@ -181,7 +181,7 @@ export const App: React.FC = () => {
         font-size: 13px;
       `}
     >
-      <h1>acolor example</h1>
+      <h1>accessible-color example</h1>
       <div>
         <div>
           Basecoat:
