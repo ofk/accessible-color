@@ -1,10 +1,9 @@
 {
-  "private": true,
   "name": "accessible-color",
   "version": "0.0.1",
   "description": "",
-  "license": "UNLICENSED",
-  "author": "",
+  "license": "MIT",
+  "author": "ofk",
   "main": "dist/index.js",
   "files": [
     "dist",
