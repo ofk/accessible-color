@@ -22,7 +22,7 @@ export const color = (
   backgroundRawColor: RawColor,
   signedContrast: number,
   hue: number,
-  alpha = 1
+  alpha = 1,
 ): chroma.Color => {
   const backgroundColor = toColor(backgroundRawColor);
   const backgroundLuminance = backgroundColor.luminance();
@@ -33,7 +33,7 @@ export const color = (
     Number.isFinite(hue)
       ? calcColor(targetLuminance, hue, 1, direction)
       : calcGrayColor(targetLuminance, direction),
-    alpha
+    alpha,
   );
 };
 
@@ -41,10 +41,10 @@ export const color = (
 export const translucent = (
   backgroundRawColor: RawColor,
   foregroundRawColor: RawColor,
-  targetRawColor?: RawColor
+  targetRawColor?: RawColor,
 ): chroma.Color => {
   const backgroundColor = toColor(backgroundRawColor);
-  const targetColor = toColor(targetRawColor || foregroundRawColor);
+  const targetColor = toColor(targetRawColor ?? foregroundRawColor);
   const foregroundColor = targetRawColor
     ? toColor(foregroundRawColor)
     : calcBoldColor(backgroundColor, targetColor);
@@ -55,5 +55,5 @@ export const translucent = (
 export const gray = (
   backgroundRawColor: RawColor,
   signedContrast: number,
-  alpha = 1
+  alpha = 1,
 ): chroma.Color => color(backgroundRawColor, signedContrast, 0 / 0, alpha);

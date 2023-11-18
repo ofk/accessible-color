@@ -52,13 +52,16 @@ export const Checkbox: React.FC<CheckboxProps> = ({ setChecked, ...props }) => (
 
 type RawOption = string | { value: string; label?: React.ReactNode };
 
-type NormalizedOption = { value: string; label: React.ReactNode };
+interface NormalizedOption {
+  value: string;
+  label: React.ReactNode;
+}
 
 const normalizeOptions = (rawOptions: RawOption[]): NormalizedOption[] =>
   rawOptions.map((rawOption) =>
     typeof rawOption === 'string'
       ? { value: rawOption, label: rawOption }
-      : { ...rawOption, label: rawOption.label ?? rawOption.value }
+      : { ...rawOption, label: rawOption.label ?? rawOption.value },
   );
 
 export const RadioButtons: React.FC<{

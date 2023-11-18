@@ -10,7 +10,7 @@ export const Row: React.FC<
         display: flex;
         flex-direction: row;
       `,
-      className
+      className,
     )}
     {...props}
   />

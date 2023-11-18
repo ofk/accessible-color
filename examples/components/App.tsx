@@ -2,15 +2,15 @@ import { css } from '@emotion/css';
 import chroma from 'chroma-js';
 import React, { useEffect, useState } from 'react';
 
-import { gray } from '../../src';
-import type { ColorChunk } from '../utils/colorChunk';
-import { getInitialColorChunk, toColorsSetFromColorChunk } from '../utils/colorChunk';
-import { toColorString } from '../utils/colorUtils';
 import { Col, ColButton } from './Col';
 import { ColorChunkControlCol } from './ColorChunkControlCol';
 import { ColorExample } from './ColorExample';
 import { Checkbox, Input, RadioButtons } from './formControls';
 import { Row } from './Row';
+import { gray } from '../../src';
+import { getInitialColorChunk, toColorsSetFromColorChunk } from '../utils/colorChunk';
+import type { ColorChunk } from '../utils/colorChunk';
+import { toColorString } from '../utils/colorUtils';
 
 // cf. https://spectrum.adobe.com/page/color/
 const specLightGrayColors = [

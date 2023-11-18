@@ -1,14 +1,14 @@
 import { css } from '@emotion/css';
 import React from 'react';
 
+import { Col } from './Col';
+import { Input, Select } from './formControls';
 import type { ColorChunk } from '../utils/colorChunk';
 import {
   colorChunkTemplates,
   getInitialColorChunk,
   updateColorChunkArg,
 } from '../utils/colorChunk';
-import { Col } from './Col';
-import { Input, Select } from './formControls';
 
 export const ColorChunkControlCol: React.FC<{
   colorChunk: ColorChunk;

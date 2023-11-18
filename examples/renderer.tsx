@@ -7,5 +7,5 @@ import { App } from './components/App';
 createRoot(document.querySelector('#app')!).render(
   <React.StrictMode>
     <App />
-  </React.StrictMode>
+  </React.StrictMode>,
 );
