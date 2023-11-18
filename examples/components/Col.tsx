@@ -9,7 +9,7 @@ export const Col: React.FC<
       css`
         padding: 0.5em;
       `,
-      className
+      className,
     )}
     {...props}
   />
@@ -24,7 +24,7 @@ export const ColButton: React.FC<
       css`
         width: 2em;
       `,
-      className
+      className,
     )}
     {...props}
   />

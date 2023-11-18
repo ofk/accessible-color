@@ -26,7 +26,7 @@ const calcLiveColorWithChroma = (
   luminance: number,
   hue: number,
   saturation: number,
-  chromaValue: number
+  chromaValue: number,
 ): chroma.Color => {
   const tmpColor = calcLiveColor(luminance, hue, saturation).set('lch.c', chromaValue);
   const resColor = calcLiveColor(luminance, hue, tmpColor.hsl()[1]);
@@ -37,7 +37,7 @@ export const calcColor = (
   luminance: number,
   hue: number,
   saturation: number,
-  direction = 0
+  direction = 0,
 ): chroma.Color => {
   const chromaValue = calcChromaMean(luminance, saturation);
   const resColor = calcLiveColorWithChroma(luminance, hue, saturation, chromaValue);

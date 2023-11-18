@@ -75,14 +75,14 @@ export const getInitialColorChunk = (type: ColorChunk['type']): ColorChunk => {
     case 'color':
       return { type, args: ['', '', ''] };
     default:
-      throw new Error(`Not support type: ${type}`);
+      throw new Error(`Not support type: ${type as string}`);
   }
 };
 
 export const updateColorChunkArg = <T extends ColorChunk>(
   colorChunk: T,
   index: number,
-  arg: string
+  arg: string,
 ): T => {
   const args = [...colorChunk.args];
   args[index] = arg;
@@ -101,23 +101,23 @@ const splitWithSpace = (str: string): string[] => {
 
 export const toColorsSetFromColorChunk = (
   backgroundColor: chroma.Color,
-  colorChunk: ColorChunk
+  colorChunk: ColorChunk,
 ): chroma.Color[][] => {
   switch (colorChunk.type) {
     case 'raw':
       return splitWithBreak(colorChunk.args[0]).map((colorsText) =>
-        splitWithSpace(colorsText).map(toColor)
+        splitWithSpace(colorsText).map(toColor),
       );
     case 'gray':
       return [
         splitWithSpace(colorChunk.args[0]).map((s) =>
-          gray(backgroundColor, parseFloat(s), parseFloat(colorChunk.args[1]) || 1)
+          gray(backgroundColor, parseFloat(s), parseFloat(colorChunk.args[1]) || 1),
         ),
       ];
     case 'translucent-gray':
       return [
         splitWithSpace(colorChunk.args[0]).map((s) =>
-          translucent(backgroundColor, gray(backgroundColor, parseFloat(s)))
+          translucent(backgroundColor, gray(backgroundColor, parseFloat(s))),
         ),
       ];
     case 'color':
@@ -127,9 +127,9 @@ export const toColorsSetFromColorChunk = (
             backgroundColor,
             parseFloat(sContrast),
             parseFloat(sHue),
-            parseFloat(colorChunk.args[2]) || 1
-          )
-        )
+            parseFloat(colorChunk.args[2]) || 1,
+          ),
+        ),
       );
     default:
       throw new Error(`Not support type: ${(colorChunk as { type: string }).type}`);

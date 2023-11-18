@@ -4,7 +4,7 @@ export const toColorString = (color: chroma.Color, outputStyle: string): string 
   const tos = (nums: number[], types: string[]): string =>
     nums
       .map((num, i) => {
-        const type = types[i] || '-';
+        const type = types[i] ?? '-';
         return type === '%' ? `${rnd((num || 0) * 100)}%` : `${rnd(num || 0)}`;
       })
       .join(',');
