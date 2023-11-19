@@ -13,63 +13,75 @@ import type { ColorChunk } from '../utils/colorChunk';
 import { toColorString } from '../utils/colorUtils';
 
 // cf. https://spectrum.adobe.com/page/color/
-const specLightGrayColors = [
-  '#ffffff',
-  '#fafafa',
-  '#f5f5f5',
-  '#eaeaea',
-  '#e1e1e1',
-  '#cacaca',
-  '#b3b3b3',
-  '#8e8e8e',
-  '#6e6e6e',
-  '#4b4b4b',
-  '#2c2c2c',
+const spectrumLightColors = [
+  [
+    '#ffffff',
+    '#fafafa',
+    '#f5f5f5',
+    '#eaeaea',
+    '#e1e1e1',
+    '#cacaca',
+    '#b3b3b3',
+    '#8e8e8e',
+    '#6e6e6e',
+    '#4b4b4b',
+    '#2c2c2c',
+  ],
+  ['#2680eb', '#1473e6', '#0d66d0', '#095aba'],
+  ['#e34850', '#d7373f', '#c9252d', '#bb121a'],
+  ['#e68619', '#da7b11', '#cb6f10', '#bd640d'],
+  ['#2d9d78', '#268e6c', '#12805c', '#107154'],
 ];
-const specLightBlueColors = ['#2680eb', '#1473e6', '#0d66d0', '#095aba'];
-const specLightRedColors = ['#e34850', '#d7373f', '#c9252d', '#bb121a'];
-const specLightOrangeColors = ['#e68619', '#da7b11', '#cb6f10', '#bd640d'];
-const specLightGreenColors = ['#2d9d78', '#268e6c', '#12805c', '#107154'];
-const specDarkGrayColors = [
-  '#252525',
-  '#2f2f2f',
-  '#323232',
-  '#3e3e3e',
-  '#4a4a4a',
-  '#5a5a5a',
-  '#6e6e6e',
-  '#909090',
-  '#b9b9b9',
-  '#e3e3e3',
-  '#ffffff',
+const spectrumDarkColors = [
+  [
+    '#252525',
+    '#2f2f2f',
+    '#323232',
+    '#3e3e3e',
+    '#4a4a4a',
+    '#5a5a5a',
+    '#6e6e6e',
+    '#909090',
+    '#b9b9b9',
+    '#e3e3e3',
+    '#ffffff',
+  ],
+  ['#2680eb', '#378ef0', '#4b9cf5', '#5aa9fa'],
+  ['#e34850', '#ec5b62', '#f76d74', '#ff7b82'],
+  ['#e68619', '#f29423', '#f9a43f', '#ffb55b'],
+  ['#2d9d78', '#33ab84', '#39b990', '#3fc89c'],
 ];
-const specDarkBlueColors = ['#2680eb', '#378ef0', '#4b9cf5', '#5aa9fa'];
-const specDarkRedColors = ['#e34850', '#ec5b62', '#f76d74', '#ff7b82'];
-const specDarkOrangeColors = ['#e68619', '#f29423', '#f9a43f', '#ffb55b'];
-const specDarkGreenColors = ['#2d9d78', '#33ab84', '#39b990', '#3fc89c'];
 
 // cf. https://jfly.uni-koeln.de/colorset/
-const cudGrayColors = ['rgb(255,255,255)', 'rgb(200,200,203)', 'rgb(132,145,158)', 'rgb(0,0,0)'];
-const cudBaseColors = [
-  'rgb(255,202,191)',
-  'rgb(255,255,128)',
-  'rgb(216,242,85)',
-  'rgb(191,228,255)',
-  'rgb(255,202,128)',
-  'rgb(119,217,168)',
-  'rgb(201,172,230)',
+const colorUniversalDesign = [
+  ['rgb(255,255,255)', 'rgb(200,200,203)', 'rgb(132,145,158)', 'rgb(0,0,0)'],
+  [
+    'rgb(255,202,191)',
+    'rgb(255,255,128)',
+    'rgb(216,242,85)',
+    'rgb(191,228,255)',
+    'rgb(255,202,128)',
+    'rgb(119,217,168)',
+    'rgb(201,172,230)',
+  ],
+  [
+    'rgb(255,75,0)',
+    'rgb(255,241,0)',
+    'rgb(3,175,122)',
+    'rgb(0,90,255)',
+    'rgb(77,196,255)',
+    'rgb(255,128,130)',
+    'rgb(246,170,0)',
+    'rgb(153,0,153)',
+    'rgb(128,64,0)',
+  ],
 ];
-const cudAccentColors = [
-  'rgb(255,75,0)',
-  'rgb(255,241,0)',
-  'rgb(3,175,122)',
-  'rgb(0,90,255)',
-  'rgb(77,196,255)',
-  'rgb(255,128,130)',
-  'rgb(246,170,0)',
-  'rgb(153,0,153)',
-  'rgb(128,64,0)',
-];
+
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const cudAccentColors = colorUniversalDesign[2]!;
+
+const toStringFromColorStrings = (colors: string[][]): string =>
+  colors.map((color) => color.join(' ')).join('\n');
 
 const initialColorChunks: ColorChunk[] = [
   {
@@ -93,10 +105,10 @@ const initialColorChunks: ColorChunk[] = [
     args: [
       [
         /* eslint-disable @typescript-eslint/no-non-null-assertion */
-        specLightBlueColors[0]!,
-        specLightRedColors[0]!,
-        specLightOrangeColors[0]!,
-        specLightGreenColors[0]!,
+        spectrumLightColors[1]![0]!,
+        spectrumLightColors[2]![0]!,
+        spectrumLightColors[3]![0]!,
+        spectrumLightColors[4]![0]!,
         /* eslint-enable @typescript-eslint/no-non-null-assertion */
       ]
         .map((c) => (hsl(toColor(c)).h ?? 0).toFixed(2))
@@ -107,33 +119,15 @@ const initialColorChunks: ColorChunk[] = [
   },
   {
     type: 'raw',
-    args: [
-      [
-        specLightGrayColors.join(' '),
-        specLightBlueColors.join(' '),
-        specLightRedColors.join(' '),
-        specLightOrangeColors.join(' '),
-        specLightGreenColors.join(' '),
-      ].join('\n'),
-    ],
+    args: [toStringFromColorStrings(spectrumLightColors)],
   },
   {
     type: 'raw',
-    args: [
-      [
-        specDarkGrayColors.join(' '),
-        specDarkBlueColors.join(' '),
-        specDarkRedColors.join(' '),
-        specDarkOrangeColors.join(' '),
-        specDarkGreenColors.join(' '),
-      ].join('\n'),
-    ],
+    args: [toStringFromColorStrings(spectrumDarkColors)],
   },
   {
     type: 'raw',
-    args: [
-      [cudGrayColors.join(' '), cudBaseColors.join(' '), cudAccentColors.join(' ')].join('\n'),
-    ],
+    args: [toStringFromColorStrings(colorUniversalDesign)],
   },
 ];
 
