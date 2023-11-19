@@ -17,11 +17,13 @@ export const calcGrayColor = (luminance: number, direction = 0): Color => {
 
   if (direction > 0) {
     if (wcagLuminance(color) < luminance) {
-      return clampRgb({ mode: 'rgb' as const, r: v + 1, g: v + 1, b: v + 1 });
+      const u = v + 1 / 255;
+      return clampRgb({ mode: 'rgb' as const, r: u, g: u, b: u });
     }
   } else if (direction < 0) {
     if (wcagLuminance(color) > luminance) {
-      return clampRgb({ mode: 'rgb' as const, r: v - 1, g: v - 1, b: v - 1 });
+      const u = v - 1 / 255;
+      return clampRgb({ mode: 'rgb' as const, r: u, g: u, b: u });
     }
   }
 
