@@ -20,6 +20,8 @@ export const toColorString = (color: Color, outputStyle: string): string => {
     case 'hsi':
     case 'lab':
     case 'lch':
+    case 'oklab':
+    case 'oklch':
       return format(converter(outputStyle)(color));
     case 'hex':
       return color.alpha && color.alpha > 0 ? formatHex8(color) : formatHex(color);
