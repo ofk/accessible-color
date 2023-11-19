@@ -1,28 +1,37 @@
-import { simulate } from '@bjornlu/colorblind';
 import { css } from '@emotion/css';
-import chroma from 'chroma-js';
+import {
+  filterDeficiencyDeuter,
+  filterDeficiencyProt,
+  filterDeficiencyTrit,
+  filterGrayscale,
+  formatRgb,
+  wcagContrast,
+  wcagLuminance,
+} from 'culori';
+import type { Color } from 'culori';
 import React from 'react';
 
 import { mixColor } from '../../src';
 import { toColorString } from '../utils/colorUtils';
 
-const simulateColor = (color: chroma.Color, style: string): chroma.Color => {
-  if (
-    style === 'protanopia' ||
-    style === 'deuteranopia' ||
-    style === 'tritanopia' ||
-    style === 'achromatopsia'
-  ) {
-    const rgba = color.rgba();
-    const rgb = simulate({ r: rgba[0], g: rgba[1], b: rgba[2] }, style);
-    return chroma(rgb.r, rgb.g, rgb.b, rgba[3]);
+const simulateColor = (color: Color, style: string): Color => {
+  switch (style) {
+    case 'protanopia':
+      return filterDeficiencyProt(1)(color);
+    case 'deuteranopia':
+      return filterDeficiencyDeuter(1)(color);
+    case 'tritanopia':
+      return filterDeficiencyTrit(1)(color);
+    case 'achromatopsia':
+      return filterGrayscale()(color);
+    default:
+      return color;
   }
-  return color;
 };
 
 export const ColorExample: React.FC<{
-  backgroundColor: chroma.Color;
-  color: chroma.Color;
+  backgroundColor: Color;
+  color: Color;
   simulationStyle: string;
   outputStyle: string;
   hideMargin?: boolean;
@@ -51,7 +60,7 @@ export const ColorExample: React.FC<{
         display: inline-block;
         width: 12em;
         padding: ${hideMargin ? 0 : '0.5em'};
-        color: ${displayColor.css()};
+        color: ${formatRgb(displayColor)};
       `}
     >
       {hideExample ? null : (
@@ -68,8 +77,8 @@ export const ColorExample: React.FC<{
           <span
             className={css`
               padding: 2px 4px;
-              color: ${opaqueColor.luminance() < 0.5 ? 'white' : 'black'};
-              background-color: ${displayColor.css()};
+              color: ${wcagLuminance(opaqueColor) < 0.5 ? 'white' : 'black'};
+              background-color: ${formatRgb(displayColor)};
             `}
           >
             Fill
@@ -80,17 +89,15 @@ export const ColorExample: React.FC<{
         <div
           className={css`
             padding: 0.5em;
-            color: ${opaqueColor.luminance() < 0.5 ? 'white' : 'black'};
-            background-color: ${displayColor.css()};
+            color: ${wcagLuminance(opaqueColor) < 0.5 ? 'white' : 'black'};
+            background-color: ${formatRgb(displayColor)};
           `}
         >
           {hideOutput ? '\u00A0' : toColorString(color, outputStyle)}
           {hideContrast ? null : (
             <>
               <br />
-              <small>
-                WCAG Contrast: {chroma.contrast(backgroundColor, opaqueColor).toFixed(2)}
-              </small>
+              <small>WCAG Contrast: {wcagContrast(backgroundColor, opaqueColor).toFixed(2)}</small>
             </>
           )}
           {hideInfomation

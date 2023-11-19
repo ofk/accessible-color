@@ -1,4 +1,4 @@
-import type chroma from 'chroma-js';
+import type { Color } from 'culori';
 
 import { color, gray, toColor, translucent } from '../../src';
 
@@ -100,9 +100,9 @@ const splitWithSpace = (str: string): string[] => {
 };
 
 export const toColorsSetFromColorChunk = (
-  backgroundColor: chroma.Color,
+  backgroundColor: Color,
   colorChunk: ColorChunk,
-): chroma.Color[][] => {
+): Color[][] => {
   switch (colorChunk.type) {
     case 'raw':
       return splitWithBreak(colorChunk.args[0]).map((colorsText) =>

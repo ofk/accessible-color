@@ -1,12 +1,10 @@
-import chroma from 'chroma-js';
+import type { Color } from 'culori';
+import { blend, hsv, interpolate, lch, rgb, wcagLuminance } from 'culori';
 
-export const calcBoldColor = (
-  backgroundColor: chroma.Color,
-  targetColor: chroma.Color,
-): chroma.Color => {
-  const targetLch = targetColor.lch();
-  return chroma(backgroundColor.luminance() < 0.5 ? 100 : 0, targetLch[1], targetLch[2], 'lch');
-};
+export const calcBoldColor = (backgroundColor: Color, targetColor: Color): Color => ({
+  ...lch(targetColor),
+  l: wcagLuminance(backgroundColor) < 0.5 ? 100 : 0,
+});
 
 export const calcAlphaValue = (
   backgroundValue: number,
@@ -18,36 +16,24 @@ export const calcAlphaValue = (
 };
 
 export const calcTranslucentColor = (
-  backgroundColor: chroma.Color,
-  foregroundColor: chroma.Color,
-  targetColor: chroma.Color,
-): chroma.Color => {
-  const baseValue = foregroundColor.hsv()[2];
-  const targetValue = targetColor.hsv()[2];
-  const backgroundValue = backgroundColor.hsv()[2];
-  return foregroundColor.alpha(calcAlphaValue(backgroundValue, baseValue, targetValue));
+  backgroundColor: Color,
+  foregroundColor: Color,
+  targetColor: Color,
+): Color => {
+  const baseValue = hsv(foregroundColor).v;
+  const targetValue = hsv(targetColor).v;
+  const backgroundValue = hsv(backgroundColor).v;
+  return { ...foregroundColor, alpha: calcAlphaValue(backgroundValue, baseValue, targetValue) };
 };
 
-export const mixColor = (
-  backgroundColor: chroma.Color,
-  foregroundColor: chroma.Color,
-): chroma.Color =>
-  chroma.mix(backgroundColor, foregroundColor.alpha(1), foregroundColor.alpha(), 'rgb');
+export const mixColor = (backgroundColor: Color, foregroundColor: Color): Color =>
+  interpolate([backgroundColor, { ...foregroundColor, alpha: 1 }])(foregroundColor.alpha ?? 1);
 
-export const isolateColor = (
-  backgroundColor: chroma.Color,
-  targetColor: chroma.Color,
-  alpha: number,
-): chroma.Color => {
+export const isolateColor = (backgroundColor: Color, targetColor: Color, alpha: number): Color => {
   if (alpha < 1) {
-    const backgroundRgb = backgroundColor.rgb();
-    const targetRgb = targetColor.rgb();
-    return chroma(
-      (targetRgb[0] - backgroundRgb[0]) / alpha + backgroundRgb[0],
-      (targetRgb[1] - backgroundRgb[1]) / alpha + backgroundRgb[1],
-      (targetRgb[2] - backgroundRgb[2]) / alpha + backgroundRgb[2],
-      alpha,
-    );
+    const backgroundRgb = { ...rgb(backgroundColor), alpha: 1 };
+    const targetRgb = { ...rgb(targetColor), alpha: 1 };
+    return { ...blend([backgroundRgb, targetRgb], (b, s) => (s - b) / alpha + b), alpha };
   }
   return targetColor;
 };

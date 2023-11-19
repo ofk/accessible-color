@@ -1,4 +1,5 @@
-import chroma from 'chroma-js';
+import { formatCss, hsl, rgb, wcagContrast } from 'culori';
+import type { Color } from 'culori';
 
 import { color, gray, mixColor, toColor, translucent } from '../src';
 
@@ -7,8 +8,8 @@ declare global {
   namespace jest {
     interface Matchers<R> {
       /* eslint-disable @typescript-eslint/method-signature-style */
-      toBeCloseToColor(expected: chroma.Color | string): R;
-      toBeGreaterThanOrEqualContrast(contrast: number, background: chroma.Color | string): R;
+      toBeCloseToColor(expected: Color | string): R;
+      toBeGreaterThanOrEqualContrast(contrast: number, background: Color | string): R;
       toBeCloseToHue(hue: number, tolerance?: number): R;
       /* eslint-enable @typescript-eslint/method-signature-style */
     }
@@ -17,46 +18,42 @@ declare global {
 
 beforeEach(() => {
   expect.extend({
-    toBeCloseToColor(
-      received: chroma.Color | string,
-      expected: chroma.Color | string,
-    ): jest.CustomMatcherResult {
-      const receivedRgba = chroma(received).rgba();
-      const expectedRgba = chroma(expected).rgba();
+    toBeCloseToColor(received: Color | string, expected: Color | string): jest.CustomMatcherResult {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const receivedRgba = rgb(received)!;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const expectedRgba = rgb(expected)!;
       const pass =
         Math.hypot(
-          receivedRgba[0] - expectedRgba[0],
-          receivedRgba[1] - expectedRgba[1],
-          receivedRgba[2] - expectedRgba[2],
-          receivedRgba[3] - expectedRgba[3],
+          receivedRgba.r - expectedRgba.r,
+          receivedRgba.g - expectedRgba.g,
+          receivedRgba.b - expectedRgba.b,
+          (receivedRgba.alpha ?? 1) - (expectedRgba.alpha ?? 1),
         ) < 2;
       const message = (): string =>
-        `expected ${String(received)} ${pass ? '' : 'not '}to be ${String(expected)}`;
+        `expected ${formatCss(received)} ${pass ? '' : 'not '}to be ${formatCss(expected)}`;
       return { pass, message };
     },
     toBeGreaterThanOrEqualContrast(
-      received: chroma.Color | string,
+      received: Color | string,
       contrast: number,
-      background: chroma.Color | string,
+      background: Color | string,
     ): jest.CustomMatcherResult {
-      const actualContrast = chroma.contrast(received, background);
+      const actualContrast = wcagContrast(received, background);
       const pass = actualContrast >= contrast;
       const message = (): string =>
-        `expected contrast ${actualContrast} between ${String(received)} and ${String(
+        `expected contrast ${actualContrast} between ${formatCss(received)} and ${formatCss(
           background,
         )} ${pass ? '' : 'not '}to be greater than or equal contrast ${contrast}`;
       return { pass, message };
     },
-    toBeCloseToHue(
-      received: chroma.Color | string,
-      hue: number,
-      tolerance = 2,
-    ): jest.CustomMatcherResult {
-      const actualHue = chroma(received).hsl()[0];
+    toBeCloseToHue(received: Color | string, hue: number, tolerance = 2): jest.CustomMatcherResult {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const actualHue = hsl(received)!.h!;
       const diffHue = Math.abs(actualHue - hue) % 360;
       const pass = Math.min(diffHue, 360 - diffHue) < tolerance;
       const message = (): string =>
-        `expected hue ${actualHue} of ${String(received)} ${pass ? '' : 'not '}to be hue ${hue}`;
+        `expected hue ${actualHue} of ${formatCss(received)} ${pass ? '' : 'not '}to be hue ${hue}`;
       return { pass, message };
     },
   });
@@ -82,10 +79,12 @@ describe('functions', () => {
       });
       expect(gray(gray(background, 1.5), -1.5)).toBeCloseToColor(background);
       expect(gray(gray(background, 15), 15)).toBeCloseToColor(background);
-      expect(gray(background, 1.5, 0.5).alpha()).toBeCloseTo(0.5);
-      expect(
-        mixColor(chroma(background), gray(background, 1.5, 0.5)),
-      ).toBeGreaterThanOrEqualContrast(1.5, background);
+      expect(gray(background, 1.5, 0.5).alpha).toBeCloseTo(0.5);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      expect(mixColor(rgb(background)!, gray(background, 1.5, 0.5))).toBeGreaterThanOrEqualContrast(
+        1.5,
+        background,
+      );
     });
   });
 

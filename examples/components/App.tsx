@@ -1,5 +1,5 @@
 import { css } from '@emotion/css';
-import chroma from 'chroma-js';
+import { formatRgb, hsl } from 'culori';
 import React, { useEffect, useState } from 'react';
 
 import { Col, ColButton } from './Col';
@@ -7,7 +7,7 @@ import { ColorChunkControlCol } from './ColorChunkControlCol';
 import { ColorExample } from './ColorExample';
 import { Checkbox, Input, RadioButtons } from './formControls';
 import { Row } from './Row';
-import { gray } from '../../src';
+import { gray, toColor } from '../../src';
 import { getInitialColorChunk, toColorsSetFromColorChunk } from '../utils/colorChunk';
 import type { ColorChunk } from '../utils/colorChunk';
 import { toColorString } from '../utils/colorUtils';
@@ -83,7 +83,7 @@ const initialColorChunks: ColorChunk[] = [
   {
     type: 'color',
     args: [
-      cudAccentColors.map((c) => chroma(c).hsl()[0].toFixed(2)).join(' '),
+      cudAccentColors.map((c) => (hsl(toColor(c)).h ?? 0).toFixed(2)).join(' '),
       [1.25, 2, 3, 5, 8, 12].join(' '),
       '',
     ],
@@ -99,7 +99,7 @@ const initialColorChunks: ColorChunk[] = [
         specLightGreenColors[0]!,
         /* eslint-enable @typescript-eslint/no-non-null-assertion */
       ]
-        .map((c) => chroma(c).hsl()[0].toFixed(2))
+        .map((c) => (hsl(toColor(c)).h ?? 0).toFixed(2))
         .join(' '),
       [4, 4.5, 5.5, 6.5].join(' '),
       '',
@@ -141,7 +141,7 @@ export const App: React.FC = () => {
   const [backgroundColorType, setBackgroundColorType] = useState('light');
   const [backgroundContrast, setBackgroundContrast] = useState(1.05);
   const [backgroundRawColor, setBackgroundRawColor] = useState('white');
-  const [backgroundColor, setBackgroundColor] = useState(chroma('white'));
+  const [backgroundColor, setBackgroundColor] = useState(toColor('white'));
   const [simulationStyle, setSimulationStyle] = useState('normal');
   const [outputStyle, setOutputStyle] = useState('hex');
   const [visibleExample, setVisibleExample] = useState(true);
@@ -168,7 +168,7 @@ export const App: React.FC = () => {
           }
           break;
         default:
-          setBackgroundColor(chroma(backgroundRawColor));
+          setBackgroundColor(toColor(backgroundRawColor));
           break;
       }
     } catch (e) {
@@ -328,7 +328,7 @@ export const App: React.FC = () => {
             <Col
               className={css`
                 flex: 1;
-                background-color: ${backgroundColor.css()};
+                background-color: ${formatRgb(backgroundColor)};
               `}
             >
               {toColorsSetFromColorChunk(backgroundColor, colorChunk).map((colorsSet, j) => (
