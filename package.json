@@ -30,16 +30,13 @@
   },
   "types": "dist/index.d.ts",
   "dependencies": {
-    "chroma-js": "^2.4.2",
     "culori": "^3.2.0"
   },
   "devDependencies": {
-    "@bjornlu/colorblind": "^1.0.3",
     "@emotion/css": "^11.11.2",
     "@ofk/eslint-config-recommend": "^6.1.2",
     "@ofk/stylelint-config-recommend": "^6.0.0",
     "@stylelint/postcss-css-in-js": "^0.38.0",
-    "@types/chroma-js": "^2.4.3",
     "@types/culori": "^2.0.4",
     "@types/jest": "^29.5.8",
     "@types/react": "^18.2.37",
