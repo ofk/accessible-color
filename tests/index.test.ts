@@ -29,7 +29,8 @@ beforeEach(() => {
           receivedRgba.g - expectedRgba.g,
           receivedRgba.b - expectedRgba.b,
           (receivedRgba.alpha ?? 1) - (expectedRgba.alpha ?? 1),
-        ) < 2;
+        ) <
+        1 / 255;
       const message = (): string =>
         `expected ${formatCss(received)} ${pass ? '' : 'not '}to be ${formatCss(expected)}`;
       return { pass, message };
