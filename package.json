@@ -64,6 +64,9 @@
     "typescript": "^5.2.2"
   },
   "keywords": [],
+  "@parcel/resolver-default": {
+    "packageExports": true
+  },
   "lint-staged": {
     "package.json": "prettier-package-json --write",
     "*.{md,json,html}": "prettier --write",
