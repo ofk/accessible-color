@@ -1,4 +1,4 @@
-// cf. https://github.com/gka/chroma.js/blob/master/src/utils/contrast.js
+// cf. https://github.com/Evercoder/culori/blob/main/src/wcag.js
 
 const calcBrightLuminance = (backgroundLuminance: number, contrast: number): number =>
   (backgroundLuminance + 0.05) * contrast - 0.05;

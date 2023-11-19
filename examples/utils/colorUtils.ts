@@ -1,31 +1,38 @@
-export const toColorString = (color: chroma.Color, outputStyle: string): string => {
-  const rnd = (num: number): number => Math.round(num * 100) / 100;
+import {
+  converter,
+  formatHex,
+  formatHex8,
+  formatHsl,
+  formatRgb,
+  getMode,
+  round,
+  wcagLuminance,
+} from 'culori';
+import type { Color } from 'culori';
 
-  const tos = (nums: number[], types: string[]): string =>
-    nums
-      .map((num, i) => {
-        const type = types[i] ?? '-';
-        return type === '%' ? `${rnd((num || 0) * 100)}%` : `${rnd(num || 0)}`;
-      })
-      .join(',');
+const twoDecimals = round(2);
 
+const format = (color: Color): string =>
+  `${color.mode}(${getMode(color.mode)
+    .channels.filter((ch) => ch !== 'alpha')
+    .map((ch) => twoDecimals((color as unknown as Record<string, number>)[ch] ?? 0))
+    .join(', ')})`;
+
+export const toColorString = (color: Color, outputStyle: string): string => {
   switch (outputStyle) {
     case 'luminance':
-      return `luminance: ${color.luminance().toFixed(4)}`;
+      return `luminance: ${wcagLuminance(color).toFixed(4)}`;
     case 'rgb':
-      return color.css();
+      return formatRgb(color);
     case 'hsl':
-      return color.css('hsl');
+      return formatHsl(color);
     case 'hsv':
-      return `hsv(${tos(color.hsv(), ['-', '%', '%'])})`;
     case 'hsi':
-      return `hsi(${tos(color.hsi(), ['-', '%', '%'])})`;
     case 'lab':
-      return `lab(${tos(color.lab(), ['-', '-', '-'])})`;
     case 'lch':
-      return `lch(${tos(color.lch(), ['-', '-', '-'])})`;
+      return format(converter(outputStyle)(color));
     case 'hex':
-      return color.hex();
+      return color.alpha && color.alpha > 0 ? formatHex8(color) : formatHex(color);
     default:
       return '';
   }

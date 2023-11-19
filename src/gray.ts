@@ -1,24 +1,27 @@
-import chroma from 'chroma-js';
+import type { Color } from 'culori';
+import { clampRgb, wcagLuminance } from 'culori';
 
-// cf. https://github.com/gka/chroma.js/blob/master/src/ops/luminance.js
+// cf. https://github.com/Evercoder/culori/blob/main/src/wcag.js
+//     https://github.com/Evercoder/culori/blob/main/src/lrgb/convertRgbToLrgb.js
 
 const calcGrayColorValue = (luminance: number): number => {
-  const x =
-    luminance <= 0.03928 / 12.92 ? luminance * 12.92 : luminance ** (1 / 2.4) * 1.055 - 0.055;
-  return Math.max(0, Math.min(Math.round(x * 255), 255));
+  if (Math.abs(luminance * 12.92) <= 0.04045) {
+    return luminance * 12.92;
+  }
+  return (Math.sign(luminance) || 1) * (luminance ** (1 / 2.4) * 1.055 - 0.055);
 };
 
-export const calcGrayColor = (luminance: number, direction = 0): chroma.Color => {
-  const v = calcGrayColorValue(luminance);
-  const color = chroma(v, v, v);
+export const calcGrayColor = (luminance: number, direction = 0): Color => {
+  const v = calcGrayColorValue(luminance) || 0;
+  const color = clampRgb({ mode: 'rgb' as const, r: v, g: v, b: v });
 
   if (direction > 0) {
-    if (color.luminance() < luminance) {
-      return chroma(v + 1, v + 1, v + 1);
+    if (wcagLuminance(color) < luminance) {
+      return clampRgb({ mode: 'rgb' as const, r: v + 1, g: v + 1, b: v + 1 });
     }
   } else if (direction < 0) {
-    if (color.luminance() > luminance) {
-      return chroma(v - 1, v - 1, v - 1);
+    if (wcagLuminance(color) > luminance) {
+      return clampRgb({ mode: 'rgb' as const, r: v - 1, g: v - 1, b: v - 1 });
     }
   }
 

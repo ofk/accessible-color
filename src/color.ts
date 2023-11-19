@@ -1,15 +1,14 @@
-import chroma from 'chroma-js';
+import type { Color } from 'culori';
+import { hsl, lch, wcagLuminance } from 'culori';
 
 import { calcGrayColor } from './gray';
 
-const calcLiveColor = (luminance: number, hue: number, saturation: number): chroma.Color => {
+const calcLiveColor = (luminance: number, hue: number, saturation: number): Color => {
   const grayColor = calcGrayColor(luminance);
-  const grayLch = grayColor.lch();
-  const targetColor = chroma(hue, saturation, grayColor.hsl()[2], 'hsl');
-  const targetLch = targetColor.lch();
-  const resColor = chroma(grayLch[0], targetLch[1], targetLch[2], 'lch')
-    .set('hsl.h', hue)
-    .set('lch.l', grayLch[0]);
+  const grayLch = lch(grayColor);
+  const targetColor = { mode: 'hsl' as const, h: hue, s: saturation, l: hsl(grayColor).l };
+  const targetLch = lch(targetColor);
+  const resColor = { ...lch({ ...hsl({ ...targetLch, l: grayLch.l }), h: hue }), l: grayLch.l };
   return resColor;
 };
 
@@ -17,7 +16,7 @@ const calcChromaMean = (luminance: number, saturation: number, step = 15): numbe
   const values: number[] = [];
   for (let hue = 0; hue < 360; hue += step) {
     const color = calcLiveColor(luminance, hue, saturation);
-    values.push(color.lch()[1]);
+    values.push(lch(color).c);
   }
   return values.reduce((a, e) => a + e, 0) / values.length;
 };
@@ -27,9 +26,9 @@ const calcLiveColorWithChroma = (
   hue: number,
   saturation: number,
   chromaValue: number,
-): chroma.Color => {
-  const tmpColor = calcLiveColor(luminance, hue, saturation).set('lch.c', chromaValue);
-  const resColor = calcLiveColor(luminance, hue, tmpColor.hsl()[1]);
+): Color => {
+  const tmpColor = { ...lch(calcLiveColor(luminance, hue, saturation)), c: chromaValue };
+  const resColor = calcLiveColor(luminance, hue, hsl(tmpColor).s);
   return resColor;
 };
 
@@ -38,22 +37,22 @@ export const calcColor = (
   hue: number,
   saturation: number,
   direction = 0,
-): chroma.Color => {
+): Color => {
   const chromaValue = calcChromaMean(luminance, saturation);
   const resColor = calcLiveColorWithChroma(luminance, hue, saturation, chromaValue);
 
   if (direction > 0) {
-    const unit = luminance - resColor.luminance();
+    const unit = luminance - wcagLuminance(resColor);
     let tmpColor = resColor;
-    for (let i = 1; i < 100 && tmpColor.luminance() < luminance; i += 1) {
+    for (let i = 1; i < 100 && wcagLuminance(tmpColor) < luminance; i += 1) {
       tmpColor = calcColor(luminance + unit * i, hue, saturation);
     }
     return tmpColor;
   }
   if (direction < 0) {
-    const unit = resColor.luminance() - luminance;
+    const unit = wcagLuminance(resColor) - luminance;
     let tmpColor = resColor;
-    for (let i = 1; i < 100 && tmpColor.luminance() > luminance; i += 1) {
+    for (let i = 1; i < 100 && wcagLuminance(tmpColor) > luminance; i += 1) {
       tmpColor = calcColor(luminance - unit * i, hue, saturation);
     }
     return tmpColor;
