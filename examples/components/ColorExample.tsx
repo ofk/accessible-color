@@ -102,12 +102,14 @@ export const ColorExample: React.FC<{
           )}
           {hideInfomation
             ? null
-            : ['luminance', 'rgb', 'hsl', 'hsv', 'hsi', 'lab', 'lch'].map((out) => (
-                <React.Fragment key={out}>
-                  <br />
-                  <small>{toColorString(color, out)}</small>
-                </React.Fragment>
-              ))}
+            : ['luminance', 'rgb', 'hsl', 'hsv', 'hsi', 'lab', 'lch', 'oklab', 'oklch'].map(
+                (out) => (
+                  <React.Fragment key={out}>
+                    <br />
+                    <small>{toColorString(color, out)}</small>
+                  </React.Fragment>
+                ),
+              )}
         </div>
       )}
     </div>
