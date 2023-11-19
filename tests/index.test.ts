@@ -1,7 +1,7 @@
-import { formatCss, hsl, rgb, wcagContrast } from 'culori';
+import { blend, formatCss, hsl, rgb, wcagContrast } from 'culori';
 import type { Color } from 'culori';
 
-import { color, gray, mixColor, toColor, translucent } from '../src';
+import { color, gray, toColor, translucent } from '../src';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -82,7 +82,7 @@ describe('functions', () => {
       expect(gray(gray(background, 15), 15)).toBeCloseToColor(background);
       expect(gray(background, 1.5, 0.5).alpha).toBeCloseTo(0.5);
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      expect(mixColor(rgb(background)!, gray(background, 1.5, 0.5))).toBeGreaterThanOrEqualContrast(
+      expect(blend([rgb(background)!, gray(background, 1.5, 0.5)])).toBeGreaterThanOrEqualContrast(
         1.5,
         background,
       );

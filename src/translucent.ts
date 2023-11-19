@@ -1,5 +1,5 @@
 import type { Color } from 'culori';
-import { blend, hsv, interpolate, lch, rgb, wcagLuminance } from 'culori';
+import { blend, hsv, lch, rgb, wcagLuminance } from 'culori';
 
 export const calcBoldColor = (backgroundColor: Color, targetColor: Color): Color => ({
   ...lch(targetColor),
@@ -25,9 +25,6 @@ export const calcTranslucentColor = (
   const backgroundValue = hsv(backgroundColor).v;
   return { ...foregroundColor, alpha: calcAlphaValue(backgroundValue, baseValue, targetValue) };
 };
-
-export const mixColor = (backgroundColor: Color, foregroundColor: Color): Color =>
-  interpolate([backgroundColor, { ...foregroundColor, alpha: 1 }])(foregroundColor.alpha ?? 1);
 
 export const isolateColor = (backgroundColor: Color, targetColor: Color, alpha: number): Color => {
   if (alpha < 1) {

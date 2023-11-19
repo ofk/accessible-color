@@ -1,5 +1,6 @@
 import { css } from '@emotion/css';
 import {
+  blend,
   filterDeficiencyDeuter,
   filterDeficiencyProt,
   filterDeficiencyTrit,
@@ -11,7 +12,6 @@ import {
 import type { Color } from 'culori';
 import React from 'react';
 
-import { mixColor } from '../../src';
 import { toColorString } from '../utils/colorUtils';
 
 const simulateColor = (color: Color, style: string): Color => {
@@ -52,7 +52,7 @@ export const ColorExample: React.FC<{
   hideContrast,
   hideInfomation,
 }) => {
-  const opaqueColor = mixColor(backgroundColor, color);
+  const opaqueColor = blend([backgroundColor, color]);
   const displayColor = simulateColor(color, simulationStyle);
   return (
     <div
