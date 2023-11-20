@@ -3,11 +3,13 @@ import type { Color } from 'culori';
 
 const twoDecimals = round(2);
 
-const format = (color: Color): string =>
-  `${color.mode}(${getMode(color.mode)
+const format = (color: Color): string => {
+  const alpha = color.alpha ?? 1;
+  return `${color.mode}(${getMode(color.mode)
     .channels.filter((ch) => ch !== 'alpha')
     .map((ch) => twoDecimals((color as unknown as Record<string, number>)[ch] ?? 0))
-    .join(',')})`;
+    .join(' ')}${alpha < 1 ? ` / ${alpha.toFixed(2)}` : ''})`;
+};
 
 export const toColorString = (color: Color, outputStyle: string): string => {
   switch (outputStyle) {
@@ -24,7 +26,7 @@ export const toColorString = (color: Color, outputStyle: string): string => {
     case 'oklch':
       return format(converter(outputStyle)(color));
     case 'hex':
-      return color.alpha && color.alpha > 0 ? formatHex8(color) : formatHex(color);
+      return (color.alpha ?? 1) < 1 ? formatHex8(color) : formatHex(color);
     default:
       return '';
   }
