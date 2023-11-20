@@ -27,34 +27,17 @@ const toStringFromColorStrings = (colors: string[][]): string =>
 const initialColorChunks: ColorChunk[] = [
   {
     type: 'gray',
-    args: [[1, 1.1, 1.25, 1.5, 2, 3, 8, 12].join(' '), ''],
+    args: [[1.1, 1.25, 1.5, 2, 3, 5, 8, 12].join(' '), ''],
   },
   {
     type: 'translucent-gray',
-    args: [[1, 1.1, 1.25, 1.5, 2, 3, 8, 12].join(' ')],
+    args: [[1.1, 1.25, 1.5, 2, 3, 5, 8, 12].join(' ')],
   },
   {
     type: 'color',
     args: [
       cudAccentColors.map((c) => (hsl(toColor(c)).h ?? 0).toFixed(2)).join(' '),
-      [1.25, 2, 3, 5, 8, 12].join(' '),
-      '',
-    ],
-  },
-  {
-    type: 'color',
-    args: [
-      [
-        /* eslint-disable @typescript-eslint/no-non-null-assertion */
-        spectrumLightColors[1]![0]!,
-        spectrumLightColors[2]![0]!,
-        spectrumLightColors[3]![0]!,
-        spectrumLightColors[4]![0]!,
-        /* eslint-enable @typescript-eslint/no-non-null-assertion */
-      ]
-        .map((c) => (hsl(toColor(c)).h ?? 0).toFixed(2))
-        .join(' '),
-      [4, 4.5, 5.5, 6.5].join(' '),
+      [1.1, 1.25, 1.5, 2, 3, 5, 8, 12].join(' '),
       '',
     ],
   },
