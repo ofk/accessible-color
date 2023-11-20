@@ -45,7 +45,7 @@ export const color = (
   return adjustTranslucentColor(
     backgroundColor,
     Number.isFinite(hue)
-      ? calcColor(targetLuminance, hue, 1, direction)
+      ? calcColor(targetLuminance, hue, direction)
       : calcGrayColor(targetLuminance, direction),
     alpha,
   );

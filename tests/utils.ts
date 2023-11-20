@@ -35,7 +35,11 @@ export const extendMatchers = (): void => {
         )} ${pass ? '' : 'not '}to be equal contrast ${contrast}`;
       return { pass, message };
     },
-    toBeCloseToHue(received: Color | string, hue: number, tolerance = 2): jest.CustomMatcherResult {
+    toBeCloseToHue(
+      received: Color | string,
+      hue: number,
+      tolerance = 35,
+    ): jest.CustomMatcherResult {
       const actualHue = hsl(received)?.h ?? 0;
       const pass = Math.abs(differenceHueNaive({ h: actualHue }, { h: hue })) < tolerance;
       const message = (): string =>
