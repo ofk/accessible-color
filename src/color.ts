@@ -3,6 +3,11 @@ import { hsl, lch, wcagLuminance } from 'culori';
 
 import { calcGrayColor } from './gray';
 
+export const calcBoldColor = (backgroundColor: Color, targetColor: Color): Color => ({
+  ...lch(targetColor),
+  l: wcagLuminance(backgroundColor) < 0.5 ? 100 : 0,
+});
+
 const calcLiveColor = (luminance: number, hue: number, saturation: number): Color => {
   const grayColor = calcGrayColor(luminance);
   const grayLch = lch(grayColor);

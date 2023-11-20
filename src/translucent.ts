@@ -1,12 +1,7 @@
 import type { Color } from 'culori';
-import { blend, hsv, lch, rgb, wcagLuminance } from 'culori';
+import { blend, hsv, rgb } from 'culori';
 
-export const calcBoldColor = (backgroundColor: Color, targetColor: Color): Color => ({
-  ...lch(targetColor),
-  l: wcagLuminance(backgroundColor) < 0.5 ? 100 : 0,
-});
-
-export const calcTranslucentColor = (
+export const adjustTransparency = (
   backgroundColor: Color,
   foregroundColor: Color,
   targetColor: Color,
@@ -20,11 +15,22 @@ export const calcTranslucentColor = (
   };
 };
 
-export const isolateColor = (backgroundColor: Color, targetColor: Color, alpha: number): Color => {
+export const adjustTranslucentColor = (
+  backgroundColor: Color,
+  targetColor: Color,
+  alpha: number,
+): Color => {
   if (alpha < 1) {
-    const backgroundRgb = { ...rgb(backgroundColor), alpha: 1 };
-    const targetRgb = { ...rgb(targetColor), alpha: 1 };
-    return { ...blend([backgroundRgb, targetRgb], (b, s) => (s - b) / alpha + b), alpha };
+    return {
+      ...blend(
+        [
+          { ...rgb(backgroundColor), alpha: 1 },
+          { ...rgb(targetColor), alpha: 1 },
+        ],
+        (b, s) => (s - b) / alpha + b,
+      ),
+      alpha,
+    };
   }
   return targetColor;
 };
