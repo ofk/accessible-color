@@ -1,3 +1,18 @@
+import { hsl } from 'culori';
+
+const sortColors = (a: string[], b: string[]): number => {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const aHsl = hsl(a.at(-1))!;
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const bHsl = hsl(b.at(-1))!;
+  const aGray = aHsl.h == null || aHsl.s < 0.15;
+  const bGray = bHsl.h == null || bHsl.s < 0.15;
+  if (aGray && bGray) return 0;
+  if (aGray) return -1;
+  if (bGray) return 1;
+  return (aHsl.h ?? 0) - (bHsl.h ?? 0);
+};
+
 // cf. https://yeun.github.io/open-color/
 export const openColors = [
   [
@@ -156,7 +171,7 @@ export const openColors = [
     '#e8590c',
     '#d9480f',
   ],
-];
+].sort(sortColors);
 
 // cf. https://spectrum.adobe.com/page/color-palette/
 export const spectrumLightColors = [
@@ -368,7 +383,7 @@ export const spectrumLightColors = [
     '#483300',
     '#362500',
   ],
-];
+].sort(sortColors);
 
 export const spectrumDarkColors = [
   [
@@ -579,7 +594,7 @@ export const spectrumDarkColors = [
     '#f9e85c',
     '#fcf6bb',
   ],
-];
+].sort(sortColors);
 
 // cf. https://jfly.uni-koeln.de/colorset/
 export const colorUniversalDesign = [

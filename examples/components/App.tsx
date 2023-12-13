@@ -1,5 +1,5 @@
 import { css } from '@emotion/css';
-import { formatRgb, hsl } from 'culori';
+import { formatRgb, samples } from 'culori';
 import React, { useEffect, useState } from 'react';
 
 import { Col, ColButton } from './Col';
@@ -18,9 +18,6 @@ import {
 } from '../utils/colors';
 import { toColorString } from '../utils/colorUtils';
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const cudAccentColors = colorUniversalDesign[2]!;
-
 const toStringFromColorStrings = (colors: string[][]): string =>
   colors.map((color) => color.join(' ')).join('\n');
 
@@ -36,7 +33,10 @@ const initialColorChunks: ColorChunk[] = [
   {
     type: 'color',
     args: [
-      cudAccentColors.map((c) => (hsl(toColor(c)).h ?? 0).toFixed(2)).join(' '),
+      samples(13)
+        .slice(0, -1)
+        .map((i) => (i * 360).toFixed(2))
+        .join(' '),
       [1.1, 1.25, 1.5, 2, 3, 5, 8, 12].join(' '),
       '',
     ],
