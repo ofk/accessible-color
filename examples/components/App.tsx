@@ -1,62 +1,57 @@
 import { css } from '@emotion/css';
-import { formatRgb, samples } from 'culori';
+import { formatRgb } from 'culori';
 import React, { useEffect, useState } from 'react';
 
 import { Col, ColButton } from './Col';
 import { ColorChunkControlCol } from './ColorChunkControlCol';
-import { ColorExample } from './ColorExample';
+import { ColorExample, ColorPalette } from './ColorExample';
 import { Checkbox, Input, RadioButtons } from './formControls';
 import { Row } from './Row';
 import { gray, toColor } from '../../src';
 import { getInitialColorChunk, toColorsSetFromColorChunk } from '../utils/colorChunk';
 import type { ColorChunk } from '../utils/colorChunk';
-import {
-  colorUniversalDesign,
-  openColors,
-  spectrumDarkColors,
-  spectrumLightColors,
-} from '../utils/colors';
+// import {
+//   colorUniversalDesign,
+//   openColors,
+//   spectrumDarkColors,
+//   spectrumLightColors,
+// } from '../utils/colors';
+// import { toStringFromColorStrings } from '../utils/colorUtils';
 import { toColorString } from '../utils/colorUtils';
-
-const toStringFromColorStrings = (colors: string[][]): string =>
-  colors.map((color) => color.join(' ')).join('\n');
 
 const initialColorChunks: ColorChunk[] = [
   {
     type: 'gray',
-    args: [[1.1, 1.25, 1.5, 2, 3, 5, 8, 12].join(' '), ''],
+    args: [[1.2, 1.5, 2, 4.5, 6, 9, 12].join(' '), ''],
   },
   {
     type: 'translucent-gray',
-    args: [[1.1, 1.25, 1.5, 2, 3, 5, 8, 12].join(' ')],
+    args: [[1.2, 1.5, 2, 4.5, 6, 9, 12].join(' ')],
   },
   {
     type: 'color',
     args: [
-      samples(13)
-        .slice(0, -1)
-        .map((i) => (i * 360).toFixed(2))
-        .join(' '),
-      [1.1, 1.25, 1.5, 2, 3, 5, 8, 12].join(' '),
+      [255, 160, 25, 85, 300].sort((a, b) => a - b).join(' '),
+      [1.2, 1.5, 2, 4.5, 6, 9, 12].join(' '),
       '',
     ],
   },
-  {
-    type: 'raw',
-    args: [toStringFromColorStrings(openColors)],
-  },
-  {
-    type: 'raw',
-    args: [toStringFromColorStrings(spectrumLightColors)],
-  },
-  {
-    type: 'raw',
-    args: [toStringFromColorStrings(spectrumDarkColors)],
-  },
-  {
-    type: 'raw',
-    args: [toStringFromColorStrings(colorUniversalDesign)],
-  },
+  // {
+  //   type: 'raw',
+  //   args: [toStringFromColorStrings(openColors)],
+  // },
+  // {
+  //   type: 'raw',
+  //   args: [toStringFromColorStrings(spectrumLightColors)],
+  // },
+  // {
+  //   type: 'raw',
+  //   args: [toStringFromColorStrings(spectrumDarkColors)],
+  // },
+  // {
+  //   type: 'raw',
+  //   args: [toStringFromColorStrings(colorUniversalDesign)],
+  // },
 ];
 
 export const App: React.FC = () => {
@@ -79,14 +74,14 @@ export const App: React.FC = () => {
           {
             const bgColor = gray('white', backgroundContrast);
             setBackgroundColor(bgColor);
-            setBackgroundRawColor(toColorString(bgColor, outputStyle));
+            setBackgroundRawColor(toColorString(outputStyle, bgColor));
           }
           break;
         case 'dark':
           {
             const bgColor = gray('black', backgroundContrast);
             setBackgroundColor(bgColor);
-            setBackgroundRawColor(toColorString(bgColor, outputStyle));
+            setBackgroundRawColor(toColorString(outputStyle, bgColor));
           }
           break;
         default:
@@ -257,20 +252,54 @@ export const App: React.FC = () => {
                 // eslint-disable-next-line react/no-array-index-key
                 <div key={j}>
                   {colorsSet.map((color, k) => (
-                    <ColorExample
+                    <div
                       // eslint-disable-next-line react/no-array-index-key
                       key={k}
-                      backgroundColor={backgroundColor}
-                      color={color}
-                      simulationStyle={simulationStyle}
-                      outputStyle={outputStyle}
-                      hideMargin={noneMode}
-                      hideExample={noneMode || !visibleExample}
-                      hidePalette={!visiblePalette}
-                      hideOutput={noneMode}
-                      hideContrast={noneMode || !visibleContrast}
-                      hideInfomation={noneMode || !visibleInfomation}
-                    />
+                      className={css`
+                        display: inline-block;
+                        width: 12em;
+                        padding: ${noneMode ? 0 : '0.5em'};
+                      `}
+                    >
+                      {noneMode || !visibleExample ? null : (
+                        <ColorExample
+                          backgroundColor={backgroundColor}
+                          color={color}
+                          simulationStyle={simulationStyle}
+                        />
+                      )}
+                      {!visiblePalette ? null : (
+                        <ColorPalette
+                          className={css`
+                            padding: 0.5em;
+                          `}
+                          backgroundColor={backgroundColor}
+                          color={color}
+                          simulationStyle={simulationStyle}
+                          outputStyle={noneMode ? undefined : outputStyle}
+                          infomation={
+                            noneMode
+                              ? undefined
+                              : [
+                                  ...(visibleContrast ? ['contrast'] : []),
+                                  ...(visibleInfomation
+                                    ? [
+                                        'luminance',
+                                        'rgb',
+                                        'hsl',
+                                        'hsv',
+                                        'hsi',
+                                        'lab',
+                                        'lch',
+                                        'oklab',
+                                        'oklch',
+                                      ]
+                                    : []),
+                                ]
+                          }
+                        />
+                      )}
+                    </div>
                   ))}
                 </div>
               ))}
