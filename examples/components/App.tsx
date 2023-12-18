@@ -1,5 +1,5 @@
 import { css } from '@emotion/css';
-import { formatRgb, samples } from 'culori';
+import { formatRgb } from 'culori';
 import React, { useEffect, useState } from 'react';
 
 import { Col, ColButton } from './Col';
@@ -10,50 +10,48 @@ import { Row } from './Row';
 import { gray, toColor } from '../../src';
 import { getInitialColorChunk, toColorsSetFromColorChunk } from '../utils/colorChunk';
 import type { ColorChunk } from '../utils/colorChunk';
-import {
-  colorUniversalDesign,
-  openColors,
-  spectrumDarkColors,
-  spectrumLightColors,
-} from '../utils/colors';
-import { toColorString, toStringFromColorStrings } from '../utils/colorUtils';
+// import {
+//   colorUniversalDesign,
+//   openColors,
+//   spectrumDarkColors,
+//   spectrumLightColors,
+// } from '../utils/colors';
+// import { toStringFromColorStrings } from '../utils/colorUtils';
+import { toColorString } from '../utils/colorUtils';
 
 const initialColorChunks: ColorChunk[] = [
   {
     type: 'gray',
-    args: [[1.1, 1.25, 1.5, 2, 3, 5, 8, 12].join(' '), ''],
+    args: [[1.2, 1.5, 2, 4.5, 6, 9, 12].join(' '), ''],
   },
   {
     type: 'translucent-gray',
-    args: [[1.1, 1.25, 1.5, 2, 3, 5, 8, 12].join(' ')],
+    args: [[1.2, 1.5, 2, 4.5, 6, 9, 12].join(' ')],
   },
   {
     type: 'color',
     args: [
-      samples(13)
-        .slice(0, -1)
-        .map((i) => (i * 360).toFixed(2))
-        .join(' '),
-      [1.1, 1.25, 1.5, 2, 3, 5, 8, 12].join(' '),
+      [255, 160, 25, 85, 300].sort((a, b) => a - b).join(' '),
+      [1.2, 1.5, 2, 4.5, 6, 9, 12].join(' '),
       '',
     ],
   },
-  {
-    type: 'raw',
-    args: [toStringFromColorStrings(openColors)],
-  },
-  {
-    type: 'raw',
-    args: [toStringFromColorStrings(spectrumLightColors)],
-  },
-  {
-    type: 'raw',
-    args: [toStringFromColorStrings(spectrumDarkColors)],
-  },
-  {
-    type: 'raw',
-    args: [toStringFromColorStrings(colorUniversalDesign)],
-  },
+  // {
+  //   type: 'raw',
+  //   args: [toStringFromColorStrings(openColors)],
+  // },
+  // {
+  //   type: 'raw',
+  //   args: [toStringFromColorStrings(spectrumLightColors)],
+  // },
+  // {
+  //   type: 'raw',
+  //   args: [toStringFromColorStrings(spectrumDarkColors)],
+  // },
+  // {
+  //   type: 'raw',
+  //   args: [toStringFromColorStrings(colorUniversalDesign)],
+  // },
 ];
 
 export const App: React.FC = () => {
