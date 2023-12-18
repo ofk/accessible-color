@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 
 import { Col, ColButton } from './Col';
 import { ColorChunkControlCol } from './ColorChunkControlCol';
-import { ColorExample } from './ColorExample';
+import { ColorExample, ColorPalette } from './ColorExample';
 import { Checkbox, Input, RadioButtons } from './formControls';
 import { Row } from './Row';
 import { gray, toColor } from '../../src';
@@ -16,10 +16,7 @@ import {
   spectrumDarkColors,
   spectrumLightColors,
 } from '../utils/colors';
-import { toColorString } from '../utils/colorUtils';
-
-const toStringFromColorStrings = (colors: string[][]): string =>
-  colors.map((color) => color.join(' ')).join('\n');
+import { toColorString, toStringFromColorStrings } from '../utils/colorUtils';
 
 const initialColorChunks: ColorChunk[] = [
   {
@@ -79,14 +76,14 @@ export const App: React.FC = () => {
           {
             const bgColor = gray('white', backgroundContrast);
             setBackgroundColor(bgColor);
-            setBackgroundRawColor(toColorString(bgColor, outputStyle));
+            setBackgroundRawColor(toColorString(outputStyle, bgColor));
           }
           break;
         case 'dark':
           {
             const bgColor = gray('black', backgroundContrast);
             setBackgroundColor(bgColor);
-            setBackgroundRawColor(toColorString(bgColor, outputStyle));
+            setBackgroundRawColor(toColorString(outputStyle, bgColor));
           }
           break;
         default:
@@ -257,20 +254,54 @@ export const App: React.FC = () => {
                 // eslint-disable-next-line react/no-array-index-key
                 <div key={j}>
                   {colorsSet.map((color, k) => (
-                    <ColorExample
+                    <div
                       // eslint-disable-next-line react/no-array-index-key
                       key={k}
-                      backgroundColor={backgroundColor}
-                      color={color}
-                      simulationStyle={simulationStyle}
-                      outputStyle={outputStyle}
-                      hideMargin={noneMode}
-                      hideExample={noneMode || !visibleExample}
-                      hidePalette={!visiblePalette}
-                      hideOutput={noneMode}
-                      hideContrast={noneMode || !visibleContrast}
-                      hideInfomation={noneMode || !visibleInfomation}
-                    />
+                      className={css`
+                        display: inline-block;
+                        width: 12em;
+                        padding: ${noneMode ? 0 : '0.5em'};
+                      `}
+                    >
+                      {noneMode || !visibleExample ? null : (
+                        <ColorExample
+                          backgroundColor={backgroundColor}
+                          color={color}
+                          simulationStyle={simulationStyle}
+                        />
+                      )}
+                      {!visiblePalette ? null : (
+                        <ColorPalette
+                          className={css`
+                            padding: 0.5em;
+                          `}
+                          backgroundColor={backgroundColor}
+                          color={color}
+                          simulationStyle={simulationStyle}
+                          outputStyle={noneMode ? undefined : outputStyle}
+                          infomation={
+                            noneMode
+                              ? undefined
+                              : [
+                                  ...(visibleContrast ? ['contrast'] : []),
+                                  ...(visibleInfomation
+                                    ? [
+                                        'luminance',
+                                        'rgb',
+                                        'hsl',
+                                        'hsv',
+                                        'hsi',
+                                        'lab',
+                                        'lch',
+                                        'oklab',
+                                        'oklch',
+                                      ]
+                                    : []),
+                                ]
+                          }
+                        />
+                      )}
+                    </div>
                   ))}
                 </div>
               ))}
