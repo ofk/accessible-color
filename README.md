@@ -12,18 +12,19 @@ npm install accessible-color
 
 ```js
 import { gray, color } from 'accessible-color';
+import { formatHex } from 'culori';
 
 // Gray with WCAG Contrast 7 on white background
-console.log(gray('white', 7).hex()); // => #595959
+console.log(formatHex(gray('white', 7))); // => #595959
 
 // Gray with WCAG Contrast 7 on black background
-console.log(gray('black', 7).hex()); // => #959595
+console.log(formatHex(gray('black', 7))); // => #959595
 
 // Blue with WCAG Contrast 4.5 on white background
-console.log(color('white', 4.5, 210).hex()); // => #0073e8
+console.log(formatHex(color('white', 4.5, 255))); // => #2477d5
 
 // Red with WCAG Contrast 4.5 on black background
-console.log(color('black', 4.5, 0).hex()); // => #dc3332
+console.log(formatHex(color('black', 4.5, 25))); // => #de2c34
 ```
 
 The color returned by these functions are not stable.
