@@ -1,48 +1,41 @@
 import {
   blend,
-  converter,
   filterDeficiencyDeuter,
   filterDeficiencyProt,
   filterDeficiencyTrit,
   filterGrayscale,
-  formatHex,
-  formatHex8,
-  formatRgb,
-  getMode,
   round,
   wcagContrast,
-  wcagLuminance,
 } from 'culori';
 import type { Color } from 'culori';
 
+import { toColorString } from '../../src';
+
 const twoDecimals = round(2);
 
-const formatColor = (color: Color): string => {
-  const alpha = color.alpha ?? 1;
-  return `${color.mode}(${getMode(color.mode)
-    .channels.filter((ch) => ch !== 'alpha')
-    .map((ch) => twoDecimals((color as unknown as Record<string, number>)[ch] ?? 0))
-    .join(' ')}${alpha < 1 ? ` / ${alpha.toFixed(2)}` : ''})`;
-};
-
-export const toColorString = (outputStyle: string, color: Color): string => {
-  switch (outputStyle) {
-    case 'luminance':
-      return `luminance: ${wcagLuminance(color).toFixed(4)}`;
+export const outputColor = (color: Color, mode: string): string => {
+  switch (mode) {
+    case 'hex':
+      return toColorString(color, mode);
     case 'rgb':
-      return formatRgb(color);
     case 'hsl':
     case 'hsv':
     case 'hsi':
+    case 'hwb':
     case 'lab':
     case 'lch':
     case 'oklab':
     case 'oklch':
-      return formatColor(converter(outputStyle)(color));
-    case 'hex':
-      return (color.alpha ?? 1) < 1 ? formatHex8(color) : formatHex(color);
+      return toColorString(color, mode)
+        .replace(/^color\((?:--)?(\w+)\s*/, '$1(')
+        .replace(/[+-]?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?/g, (x) =>
+          String(twoDecimals(Number.parseFloat(x))),
+        )
+        .replace(/(?<=^rgba\(.*?,.*?,.*?)\s*,\s*/g, ' / ')
+        .replace(/\s*,\s*/g, ' ')
+        .replace(/%/g, '');
     default:
-      throw new Error(`Not support outputStyle = ${outputStyle}`);
+      throw new Error(`Not support mode = ${mode}`);
   }
 };
 

@@ -1,3 +1,4 @@
+export * from './utilities';
 export * from './luminance';
 export * from './translucent';
 export * from './gray';
