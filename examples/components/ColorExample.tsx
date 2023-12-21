@@ -3,7 +3,7 @@ import type { Color } from 'culori';
 import { blend, formatRgb, wcagLuminance } from 'culori';
 import React from 'react';
 
-import { calcContrast, simulateColor, toColorString } from '../utils/colorUtils';
+import { calcContrast, outputColor, simulateColor } from '../utils/colorUtils';
 
 export const ColorExample: React.FC<{
   className?: string;
@@ -64,15 +64,20 @@ export const ColorPalette: React.FC<{
         `,
       )}
     >
-      {outputStyle ? toColorString(outputStyle, color) : '\u00A0'}
+      {outputStyle ? outputColor(color, outputStyle) : '\u00A0'}
       {infomation?.map((info, i) => (
         // eslint-disable-next-line react/no-array-index-key
         <React.Fragment key={i}>
           <br />
           <small>
-            {info === 'contrast'
-              ? `contrast: ${calcContrast(displayColor, backgroundColor).toFixed(2)}`
-              : toColorString(info, color)}
+            {
+              // eslint-disable-next-line no-nested-ternary
+              info === 'contrast'
+                ? `contrast: ${calcContrast(displayColor, backgroundColor).toFixed(2)}`
+                : info === 'luminance'
+                  ? `luminance: ${wcagLuminance(color).toFixed(4)}`
+                  : outputColor(color, info)
+            }
           </small>
         </React.Fragment>
       ))}

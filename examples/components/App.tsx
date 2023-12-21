@@ -17,7 +17,7 @@ import type { ColorChunk } from '../utils/colorChunk';
 //   spectrumLightColors,
 // } from '../utils/colors';
 // import { toStringFromColorStrings } from '../utils/colorUtils';
-import { toColorString } from '../utils/colorUtils';
+import { outputColor } from '../utils/colorUtils';
 
 const initialColorChunks: ColorChunk[] = [
   {
@@ -74,14 +74,14 @@ export const App: React.FC = () => {
           {
             const bgColor = gray('white', backgroundContrast);
             setBackgroundColor(bgColor);
-            setBackgroundRawColor(toColorString(outputStyle, bgColor));
+            setBackgroundRawColor(outputColor(bgColor, outputStyle));
           }
           break;
         case 'dark':
           {
             const bgColor = gray('black', backgroundContrast);
             setBackgroundColor(bgColor);
-            setBackgroundRawColor(toColorString(outputStyle, bgColor));
+            setBackgroundRawColor(outputColor(bgColor, outputStyle));
           }
           break;
         default:
@@ -289,6 +289,7 @@ export const App: React.FC = () => {
                                         'hsl',
                                         'hsv',
                                         'hsi',
+                                        'hwb',
                                         'lab',
                                         'lch',
                                         'oklab',
