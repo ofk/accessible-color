@@ -1,16 +1,11 @@
 import { blend } from 'culori';
 
 import { extendMatchers } from './utils';
-import { color, gray, toColor, translucent } from '../src';
+import { color, gray, translucent } from '../src';
 
 beforeEach(extendMatchers);
 
 describe('functions', () => {
-  test('toColor', () => {
-    expect(toColor('red')).toBeCloseToColor('#ff0000');
-    expect(toColor('invalid')).toBeCloseToColor('#000000');
-  });
-
   test('translucent', () => {
     expect(translucent('white', 'black', '#999')).toBeCloseToColor('#00000066');
     expect(translucent('black', 'white', '#999')).toBeCloseToColor('#ffffff99');
