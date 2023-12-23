@@ -1,10 +1,28 @@
-import type { Color, Mode } from 'culori';
-import { converter, formatCss, formatHex, formatHex8, formatRgb, parse } from 'culori';
+import type { Color, Mode, Oklch, Rgb } from 'culori';
+import {
+  clampChroma,
+  clampRgb,
+  converter,
+  formatCss,
+  formatHex,
+  formatHex8,
+  formatRgb,
+  oklch,
+  parse,
+  rgb,
+} from 'culori';
 
-// Color argument type
+export const toSafeRgb = (color: Color): Rgb => clampRgb(rgb(color));
+
+export interface SafeOklch extends Omit<Oklch, 'h'>, Required<Pick<Oklch, 'h'>> {}
+
+export const toSafeOklch = (color: Color): SafeOklch => {
+  const c = clampChroma(oklch(color), 'oklch');
+  return { ...c, c: c.c || 0, h: c.h ?? 0 };
+};
+
 export type RawColor = string | Color;
 
-// Convert to Color, defaults to black if an invalid color value is passed
 export const toColor = (value: RawColor): Color => {
   if (typeof value === 'string') {
     return parse(value) ?? { mode: 'rgb' as const, r: 0, g: 0, b: 0 };
@@ -12,10 +30,8 @@ export const toColor = (value: RawColor): Color => {
   return value;
 };
 
-// Color output mode
 export type ColorMode = Mode | 'hex6' | 'hex8' | 'hex';
 
-// Convert to color string
 export const toColorString = (value: RawColor, mode: ColorMode = 'hex'): string => {
   const color = toColor(value);
   switch (mode) {
