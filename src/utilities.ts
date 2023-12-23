@@ -1,6 +1,7 @@
-import type { Color, Mode, Oklch } from 'culori';
+import type { Color, Mode, Oklch, Rgb } from 'culori';
 import {
   clampChroma,
+  clampRgb,
   converter,
   formatCss,
   formatHex,
@@ -8,7 +9,10 @@ import {
   formatRgb,
   oklch,
   parse,
+  rgb,
 } from 'culori';
+
+export const toSafeRgb = (color: Color): Rgb => clampRgb(rgb(color));
 
 export interface SafeOklch extends Omit<Oklch, 'h'>, Required<Pick<Oklch, 'h'>> {}
 

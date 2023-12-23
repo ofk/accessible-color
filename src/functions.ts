@@ -1,12 +1,12 @@
 import type { Rgb } from 'culori';
-import { rgb, wcagLuminance } from 'culori';
+import { wcagLuminance } from 'culori';
 
 import { calcBoldColor, calcColor } from './color';
 import { calcGrayColor } from './gray';
 import { calcLuminance } from './luminance';
 import { adjustTranslucentColor, adjustTransparency } from './translucent';
 import type { RawColor } from './utilities';
-import { toColor } from './utilities';
+import { toColor, toSafeRgb } from './utilities';
 
 // Calculates a translucent color close to the target color with the passed background and foreground colors
 export const translucent = (
@@ -20,7 +20,7 @@ export const translucent = (
     ? toColor(foregroundRawColor)
     : calcBoldColor(backgroundColor, targetColor);
   const resultColor = adjustTransparency(backgroundColor, foregroundColor, targetColor);
-  return rgb(resultColor);
+  return toSafeRgb(resultColor);
 };
 
 // Calculates a color with a certain contrast to the passed background color
@@ -41,7 +41,7 @@ export const color = (
       : calcGrayColor(targetLuminance, direction),
     alpha,
   );
-  return rgb(resultColor);
+  return toSafeRgb(resultColor);
 };
 
 // Calculates a gray color with a certain contrast to the passed background color
