@@ -1,5 +1,21 @@
-import type { Color, Mode } from 'culori';
-import { converter, formatCss, formatHex, formatHex8, formatRgb, parse } from 'culori';
+import type { Color, Mode, Oklch } from 'culori';
+import {
+  clampChroma,
+  converter,
+  formatCss,
+  formatHex,
+  formatHex8,
+  formatRgb,
+  oklch,
+  parse,
+} from 'culori';
+
+export interface SafeOklch extends Omit<Oklch, 'h'>, Required<Pick<Oklch, 'h'>> {}
+
+export const toSafeOklch = (color: Color): SafeOklch => {
+  const c = clampChroma(oklch(color), 'oklch');
+  return { ...c, c: c.c || 0, h: c.h ?? 0 };
+};
 
 export type RawColor = string | Color;
 

@@ -13,13 +13,8 @@ import type { NonEmptyArray } from 'culori/src/common';
 
 import { calcGrayColor } from './gray';
 import { adjustLuminance } from './luminance';
-
-interface SafeOklch extends Omit<Oklch, 'h'>, Required<Pick<Oklch, 'h'>> {}
-
-const toSafeOklch = (color: Color): SafeOklch => {
-  const c = clampChroma(oklch(color), 'oklch');
-  return { ...c, c: c.c || 0, h: c.h ?? 0 };
-};
+import type { SafeOklch } from './utilities';
+import { toSafeOklch } from './utilities';
 
 export const calcBoldColor = (backgroundColor: Color, targetColor: Color): Oklch => ({
   ...oklch(targetColor),
